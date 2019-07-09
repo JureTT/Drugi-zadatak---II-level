@@ -15,14 +15,14 @@ namespace Drugi_zadatak___II_level.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Stranica je napravljena kako bi se naučila sredstva koja su na raspolaganja programeru pri izradi web aplikacije.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Kontakt se može ostvariti putem maila.";
 
             return View();
         }

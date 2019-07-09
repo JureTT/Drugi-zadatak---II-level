@@ -22,3 +22,21 @@ select,
 textarea {
     max-width: 280px;
 }
+/*Dodano*/
+.Message {
+    font-size: 14px;
+    color: #FF0000;
+    font-weight: 700;
+}
+#naslovnicaButton {
+    border-color: #2e6da4;
+    background-image: linear-gradient(to right, rgb(28, 110, 164) 0%, rgb(35, 136, 203) 50%, rgb(20, 78, 117) 100%);
+    box-shadow: rgb(0, 0, 0) 5px 5px 15px 5px;
+}
+#naslovnicaJumbotron {
+    color: #fff;
+    background-color: #eee;
+    background-image: url("../Images/RimacC2.jpg");
+    background-position: center;
+    text-shadow: 0 0 5px #46E7F3, 0 0 10px #39E8EF, 0 0 15px #35E5EC, 0 0 20px #35f3df, 0 0 30px #24F2F1, 0 0 40px #49EAE4, 0 0 55px #39E5F2, 0 0 75px #2bdeec;
+}
