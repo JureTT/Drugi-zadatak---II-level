@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Drugi_zadatak___II_level.Models
+namespace PoslovnaLogika.Models
 {
     public class VoziloMarka : IVoziloMarka
     {

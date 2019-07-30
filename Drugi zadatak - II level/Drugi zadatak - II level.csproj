@@ -167,16 +167,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\IVoziloMarka.cs" />
-    <Compile Include="Models\IVoziloModel.cs" />
-    <Compile Include="Models\VoziloMarka.cs" />
+    <Compile Include="Models\Mape.cs" />
     <Compile Include="Models\VoziloMarkaVM.cs" />
-    <Compile Include="Models\VoziloModel.cs" />
     <Compile Include="Models\VoziloModelVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\VozilaDbContext.cs" />
-    <Compile Include="Service\VoziloServis.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -193,6 +187,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="libman.json" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -245,6 +240,15 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PoslovnaLogika\PoslovnaLogika.csproj">
+      <Project>{569bcc1d-0e54-4c36-b287-f6b0824aa39f}</Project>
+      <Name>PoslovnaLogika</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

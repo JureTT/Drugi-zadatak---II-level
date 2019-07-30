@@ -1,18 +1,18 @@
-namespace Drugi_zadatak___II_level.Migrations
+namespace PoslovnaLogika.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Drugi_zadatak___II_level.Service.VozilaDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<PoslovnaLogika.Service.VozilaDbContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Drugi_zadatak___II_level.Service.VozilaDbContext context)
+        protected override void Seed(PoslovnaLogika.Service.VozilaDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

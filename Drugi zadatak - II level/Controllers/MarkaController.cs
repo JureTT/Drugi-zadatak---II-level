@@ -1,5 +1,6 @@
-﻿using Drugi_zadatak___II_level.Models;
-using Drugi_zadatak___II_level.Service;
+﻿using PoslovnaLogika.Models;
+using PoslovnaLogika.Service;
+using Drugi_zadatak___II_level.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,10 @@ using System.Web.Mvc;
 namespace Drugi_zadatak___II_level.Controllers
 {
     public class MarkaController : Controller
-    {
+    {        
+        VoziloServis Servis = new VoziloServis();
+        Mape Mapa = new Mape();
+        
         // GET: Marka
         public ActionResult Index()
         {           
@@ -19,10 +23,10 @@ namespace Drugi_zadatak___II_level.Controllers
         public ActionResult List()
         {
             List<VoziloMarkaVM> lstMarke = new List<VoziloMarkaVM>();
-
             try
             {
-                lstMarke = VoziloServis.DohvatiMarke();
+                List<VoziloMarka> kolekcija = Servis.DohvatiMarke();
+                lstMarke = Mapa.maper.Map<List<VoziloMarkaVM>>(kolekcija);                
             }
             catch (Exception ex)
             {
@@ -34,18 +38,17 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Details/5
         public ActionResult Details(int idMarke)
         {
-            VoziloMarkaVM marka = new VoziloMarkaVM();
-
+            VoziloMarkaVM markaVM = new VoziloMarkaVM();
             try
             {
-                marka = VoziloServis.DohvatiMarku(idMarke);
+                VoziloMarka marka = Servis.DohvatiMarku(idMarke);
+                markaVM = Mapa.maper.Map<VoziloMarkaVM>(marka);                
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja marke vozila. Opis: " + ex.Message;
             }
-
-            return View(marka);
+            return View(markaVM);
         }
 
         // GET: Marka/Create
@@ -56,74 +59,77 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Marka/Create
         [HttpPost]
-        public ActionResult Create(VoziloMarkaVM marka)
+        public ActionResult Create(VoziloMarkaVM markaVM)
         {
             try
             {
-                VoziloServis.KreirajMarku(marka);
+                VoziloMarka marka = Mapa.maper.Map<VoziloMarka>(markaVM);
+                Servis.KreirajMarku(marka);
                 ViewBag.Message = "Marka je uspješno upisana!";
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod upisa marke! Opis: " + ex.Message;
             }
-            return View(marka);
+            return View(markaVM);
         }
 
         // GET: Marka/Edit/5
         public ActionResult Edit(int idMarke)
         {
-            VoziloMarkaVM marka = new VoziloMarkaVM();
+            VoziloMarkaVM markaVM = new VoziloMarkaVM();
 
             try
             {
-                marka = VoziloServis.DohvatiMarku(idMarke);
+                VoziloMarka marka = Servis.DohvatiMarku(idMarke);
+                markaVM = Mapa.maper.Map<VoziloMarkaVM>(marka);
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja marke! Opis: " + ex.Message;
             }
 
-            return View(marka);
+            return View(markaVM);
         }
 
         // POST: Marka/Edit/5
         [HttpPost]
-        public ActionResult Edit(VoziloMarkaVM marka)
+        public ActionResult Edit(VoziloMarkaVM markaVM)
         {
             try
             {
-                VoziloServis.UrediMarku(marka);
+                VoziloMarka marka = Mapa.maper.Map<VoziloMarka>(markaVM);
+                Servis.UrediMarku(marka);
                 ViewBag.Message = "Marka uspješno uređena!";
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja marke! Opis: " + ex.Message;
             }
-            return View(marka);
+            return View(markaVM);
         }
 
         // GET: Marka/Delete/5
         public ActionResult Delete(int idMarke)
         {
-            VoziloMarkaVM marka = new VoziloMarkaVM();
-
+            VoziloMarkaVM markaVM = new VoziloMarkaVM();
             try
             {
-                marka = VoziloServis.DohvatiMarku(idMarke);
+                VoziloMarka marka = Servis.DohvatiMarku(idMarke);
+                markaVM = Mapa.maper.Map<VoziloMarkaVM>(marka);
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja marke! Opis: " + ex.Message;
             }
-            return View(marka);
+            return View(markaVM);
         }
         [HttpPost]
-        public ActionResult Delete(VoziloMarkaVM marka)
+        public ActionResult Delete(VoziloMarkaVM markaVM)
         {
             try
             {
-                VoziloServis.IzbrisiMarku(marka.Id);
+                Servis.IzbrisiMarku(markaVM.Id);
                 TempData["Message"] = "Marka uspješno izbrisana";
             }
             catch (Exception ex)

@@ -1,13 +1,16 @@
-﻿@using Drugi_zadatak___II_level.Service;
+﻿@using PoslovnaLogika.Service;
+@using PoslovnaLogika.Models;
 @using Drugi_zadatak___II_level.Models;
 @model IEnumerable<Drugi_zadatak___II_level.Models.VoziloModelVM>
 
 @{
     ViewBag.Title = "List";
     VoziloServis servis = new VoziloServis();
-    List<VoziloMarkaVM> lista = servis.DohvatiMarkeVM();
+    Mape Mapa = new Mape();
+    List<VoziloMarka> lista = servis.DohvatiMarke();
+    List<VoziloMarkaVM> listaVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lista);
     VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };
-    lista.Insert(0, svaVozila);
+    listaVM.Insert(0, svaVozila);
     int a = 0;
 }
 
@@ -29,7 +32,7 @@
     {
         <label>Filter: </label>
         @Html.DropDownList("Marke",
-                lista.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
+                listaVM.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
                 "--odaberi--",
                 new
                 {

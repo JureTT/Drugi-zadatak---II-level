@@ -1,13 +1,14 @@
-﻿using Drugi_zadatak___II_level.Models;
+﻿using PoslovnaLogika.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Drugi_zadatak___II_level.Service
+namespace PoslovnaLogika.Service
 {
-    public class VozilaDbContext:DbContext
+    public class VozilaDbContext : DbContext
     {
         public DbSet<VoziloMarka> VoziloMarke { get; set; }
         public DbSet<VoziloModel> VoziloModeli { get; set; }
