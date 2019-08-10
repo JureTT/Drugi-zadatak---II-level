@@ -13,8 +13,13 @@
     {
         @Html.AntiForgeryToken()
         <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Id)
+            </dt>
 
-            @Html.HiddenFor(model => model.Id)
+            <dd>
+                @Html.DisplayFor(model => model.Id)
+            </dd>
 
             <dt>
                 @Html.DisplayNameFor(model => model.Naziv)

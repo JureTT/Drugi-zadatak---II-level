@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Drugi_zadatak___II_level.Controllers
 {
@@ -18,49 +20,116 @@ namespace Drugi_zadatak___II_level.Controllers
         public ActionResult Index()
         {
             return View("Error");
-        }
-        public void metoda()
-        {
-
-        }
-        public ActionResult List()
-        {
-            List<VoziloModelVM> lstModeliVM = new List<VoziloModelVM>();
-
+        }        
+        public ActionResult List(int? idMarke,int? strana, string sortiraj, string naziv)
+        {            
+            List<VoziloModelVM> lstModeliVM = null;
+            IPagedList<VoziloModelVM> listaModeliVM = null;
+            ViewBag.sortId = "A_Id";
+            ViewBag.sortIdMarke = "A_IdMarke";
+            ViewBag.sortNaziv = "A_Naziv";
+            ViewBag.sortKratica = "A_Kratica";
+            int str;
+            if (strana == null)
+            {
+                str = 1;
+            }
+            else
+            {
+                str = strana.Value;
+            }
             try
             {
-                List<VoziloModel> lstModeli = Servis.DohvatiModele();
-                lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = "Greška kod dohvaćanja popisa modela vozila. Opis: " + ex.Message;
-            }
-            return View(lstModeliVM);
-        }
-        [HttpPost]
-        public ActionResult List(int idMarke)
-        {
-            List<VoziloModelVM> lstModeliVM = new List<VoziloModelVM>();
-
-            try
-            {
-                if (idMarke == 0)
+                List<VoziloModel> lstModeli;
+                if (idMarke > 0)
                 {
-                    Response.Redirect("List");
+                    lstModeli = Servis.DohvatiListuModela(idMarke);                    
                 }
                 else
                 {
-                    List<VoziloModel> lstModeli = Servis.DohvatiListuModela(idMarke);
-                    lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
+                    lstModeli = Servis.DohvatiModele();
                 }
+                if (naziv != null)
+                {
+                    lstModeli = (from item in lstModeli where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();
+                }
+
+                switch (sortiraj)
+                {
+                    case "D_Id":
+                        lstModeli = lstModeli.OrderByDescending(x => x.Id).ToList();
+                        ViewBag.sortId = "A_Id";
+                        break;
+                    case "A_IdMarke":
+                        lstModeli = lstModeli.OrderBy(x => x.IdMarke).ToList();
+                        ViewBag.sortIdMarke = "D_IdMarke";
+                        break;
+                    case "D_IdMarke":
+                        lstModeli = lstModeli.OrderByDescending(x => x.IdMarke).ToList();
+                        ViewBag.sortIdMarke = "A_IdMarke";
+                        break;
+                    case "A_Naziv":
+                        lstModeli = lstModeli.OrderBy(x => x.Naziv).ToList();
+                        ViewBag.sortNaziv = "D_Naziv";
+                        break;
+                    case "D_Naziv":
+                        lstModeli = lstModeli.OrderByDescending(x => x.Naziv).ToList();
+                        ViewBag.sortNaziv = "A_Naziv";
+                        break;
+                    case "A_Kratica":
+                        lstModeli = lstModeli.OrderBy(x => x.Kratica).ToList();
+                        ViewBag.sortKratica = "D_Kratica";
+                        break;
+                    case "D_Kratica":
+                        lstModeli = lstModeli.OrderByDescending(x => x.Kratica).ToList();
+                        ViewBag.sortKratica = "A_Kratica";
+                        break;
+                    default:
+                        ViewBag.sortId = "D_Id"; 
+                        break;
+                 }                
+                lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
+                listaModeliVM = lstModeliVM.ToPagedList(str, 10);
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa modela vozila. Opis: " + ex.Message;
             }
-            return View(lstModeliVM);
+            return View(listaModeliVM);
         }
+        //[HttpPost]//ovo ti najvjerovatnije ne treba
+        //public ActionResult List(int idMarke,int? strana)
+        //{
+        //    List<VoziloModelVM> lstModeliVM = new List<VoziloModelVM>();
+        //    IPagedList<VoziloModelVM> listaModeliVM = null;
+        //    int str;
+        //    if (strana == null)
+        //    {
+        //        str = 1;
+        //    }
+        //    else
+        //    {
+        //        str = strana.Value;
+        //    }
+        //    try
+        //    {
+        //        if (idMarke == 0)
+        //        {
+        //            Response.Redirect("List");
+        //        }
+        //        else
+        //        {
+        //            List<VoziloModel> lstModeli = Servis.DohvatiListuModela(idMarke);
+        //            lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
+        //            listaModeliVM = lstModeliVM.ToPagedList(str, 10); 
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewBag.Message = "Greška kod dohvaćanja popisa modela vozila. Opis: " + ex.Message;
+        //    }
+        //    return View(listaModeliVM);
+        //}
 
         // GET: Model/Details/5
         public ActionResult Details(int idModela)

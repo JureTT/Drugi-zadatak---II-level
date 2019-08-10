@@ -1,68 +1,85 @@
 ﻿@using PoslovnaLogika.Service;
 @using PoslovnaLogika.Models;
 @using Drugi_zadatak___II_level.Models;
-@model IEnumerable<Drugi_zadatak___II_level.Models.VoziloModelVM>
+@using PagedList;
+@using PagedList.Mvc;
+@model PagedList.IPagedList<Drugi_zadatak___II_level.Models.VoziloModelVM>
 
 @{
     ViewBag.Title = "List";
-    VoziloServis servis = new VoziloServis();
+    VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
     Mape Mapa = new Mape();
     List<VoziloMarka> lista = servis.DohvatiMarke();
     List<VoziloMarkaVM> listaVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lista);
-    VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };
-    listaVM.Insert(0, svaVozila);
-    int a = 0;
+    //VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };     // nepotrebno
+    //listaVM.Insert(0, svaVozila);
+
+    int a = 0;      // kod za listanje stranica u oba smjera
+    int br = Model.TotalItemCount;
+    string redni = Request.QueryString["sortiraj"];
+    int str = Convert.ToInt16(Request.QueryString["strana"]);
+    if (redni == "D_Id")
+    {
+        a = br + 1 - ((str - 1) * 10);
+    }
+    else
+    {
+        if (str > 0)
+        {
+            a = (str - 1) * 10;
+        }
+    }
 }
 
 <h2>Lista</h2>
-
-<script type="text/javascript">
-
-    function promjeniId() {
-        var id = document.getElementById("Marke").value;
-        var url = "/Model/List?idMarke=" + id;
-        document.getElementById("Forma").action = url;
-    }
-</script>
 <p>
     @Html.ActionLink("Kreiraj", "Create")
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Message">@TempData["Message"]</span>
 
-    @using (Html.BeginForm("List", "Model", FormMethod.Post, new { id = "Forma" }))
+    @using (Html.BeginForm("List", "Model", FormMethod.Get))
     {
-        <label>Filter: </label>
-        @Html.DropDownList("Marke",
-                listaVM.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
-                "--odaberi--",
-                new
-                {
-                    onchange = "promjeniId();submit()"
-                })
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
+        @Html.DropDownList("idMarke",
+              listaVM.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
+              "--odaberi--",
+              new
+              {
+                  onchange = "submit()"
+              })
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modeli vozila: </label>
+        @Html.TextBox("Naziv")
+        <input type="submit" value="Traži" />
     }
 </p>
 
 <table class="table">
     <tr>
         <th>
-            Redni broj
+            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IdMarke)
+            @Html.ActionLink("Šifra marke", "List", new { sortiraj = ViewBag.sortIdMarke, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Naziv)
+            @Html.ActionLink("Naziv", "List", new { sortiraj = ViewBag.sortNaziv, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Kratica)
+            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
         </th>
         <th></th>
     </tr>
-
     @foreach (var item in Model)
     {
         <tr>
             <th>
-                @(a = a + 1)
+                @if (redni == "D_Id")
+                {
+                    @(a = a - 1)
+                }
+                else
+                {
+                    @(a = a + 1)
+                }
             </th>
             <td>
                 @Html.DisplayFor(modelItem => item.IdMarke)
@@ -82,3 +99,5 @@
     }
 
 </table>
+
+@Html.PagedListPager(Model, strana => Url.Action("List",  new { strana, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

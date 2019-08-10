@@ -1,8 +1,28 @@
-﻿@model IEnumerable<Drugi_zadatak___II_level.Models.VoziloMarkaVM>
+﻿@using PoslovnaLogika.Service;
+@using PoslovnaLogika.Models;
+@using Drugi_zadatak___II_level.Models;
+@using PagedList;
+@using PagedList.Mvc;
+@model PagedList.IPagedList<Drugi_zadatak___II_level.Models.VoziloMarkaVM>
 
 @{
     ViewBag.Title = "List";
-    int a = 0;
+
+    int a = 0;      // kod za listanje stranica u oba smjera
+    int br = Model.TotalItemCount;
+    string redni = Request.QueryString["sortiraj"];
+    int str = Convert.ToInt16(Request.QueryString["strana"]);
+    if (redni == "D_Id")
+    {
+        a = br + 1 - ((str - 1) * 10);
+    }
+    else
+    {
+        if (str > 0)
+        {
+            a = (str - 1) * 10;
+        }
+    }
 }
 
 <h2>Lista</h2>
@@ -10,18 +30,29 @@
 <p>
     @Html.ActionLink("Kreiraj", "Create")
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Message">@TempData["Message"]</span>
+
+    @using (Html.BeginForm("List", "Marka", FormMethod.Get))
+    {        
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Naziv tvrtke: </label>
+        @Html.TextBox("Naziv")
+        <input type="submit" value="Traži" />
+        
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kratica tvrtke: </label>
+        @Html.TextBox("Kratica")
+        <input type="submit" value="Traži" />
+    }
 </p>
 
 <table class="table">
     <tr>
         <th>
-           Redni broj
+            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId, kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
+        </th>        
+        <th>
+            @Html.ActionLink("Naziv", "List", new { sortiraj = ViewBag.sortNaziv, kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Naziv)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Kratica)
+            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica, kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
         </th>
         <th></th>
     </tr>
@@ -30,7 +61,17 @@
     {
         <tr>
             <th>
-                @(a = a + 1)
+                @if (redni == "D_Id")
+                {
+                    @(a = a - 1)
+                }
+                else
+                {
+                    @(a = a + 1)
+                    @ViewBag.lstMarkeN
+                    @ViewBag.lstMarkeK
+                    @ViewBag.lstMarkeS
+                }
             </th>
             <td>
                 @Html.DisplayFor(modelItem => item.Naziv)
@@ -47,3 +88,5 @@
     }
 
 </table>
+
+@Html.PagedListPager(Model, strana => Url.Action("List", new { strana, kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

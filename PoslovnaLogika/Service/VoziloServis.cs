@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Service
 {
-    public class VoziloServis
+    public class VoziloServis : IVoziloServis
     {
         public VozilaDbContext _db = new VozilaDbContext();
 
@@ -53,7 +53,7 @@ namespace PoslovnaLogika.Service
             return kolekcija;
         }
 
-        public List<VoziloModel> DohvatiListuModela(int idMarke)
+        public List<VoziloModel> DohvatiListuModela(int? idMarke)
         {
             List<VoziloModel> kolekcija = (from item in _db.VoziloModeli where item.IdMarke == idMarke select item).ToList();
             return kolekcija;

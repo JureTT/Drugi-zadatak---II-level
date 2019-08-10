@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
+using PagedList.Mvc;
 
 namespace Drugi_zadatak___II_level.Controllers
 {
@@ -20,19 +22,77 @@ namespace Drugi_zadatak___II_level.Controllers
             return View("Error");        
         }
 
-        public ActionResult List()
+        public ActionResult List(int? strana, string sortiraj, string naziv, string kratica)
         {
-            List<VoziloMarkaVM> lstMarke = new List<VoziloMarkaVM>();
+            List<VoziloMarkaVM> lstMarkeVM = null;
+            IPagedList<VoziloMarkaVM> listaMarkeVM = null;
+            ViewBag.sortId = "A_Id";
+            ViewBag.sortNaziv = "A_Naziv";
+            ViewBag.sortKratica = "A_Kratica";
+            int str = (strana == null)? str = 1 : str = strana.Value;
+
             try
             {
-                List<VoziloMarka> kolekcija = Servis.DohvatiMarke();
-                lstMarke = Mapa.maper.Map<List<VoziloMarkaVM>>(kolekcija);                
+                List<VoziloMarka> lstMarke = Servis.DohvatiMarke();
+
+                
+                if (naziv != null || kratica != null)
+                {
+                    if (naziv != "")
+                    {
+                        List<VoziloMarka> lstMarkeN = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();
+                        //lstMarke = lstMarkeN;
+                        ViewBag.lstMarkeN = " | " + lstMarkeN.Count;
+                    }
+                    else if (kratica != "")
+                    {
+                        List<VoziloMarka> lstMarkeK = (from item in lstMarke where item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();
+                        //lstMarke = lstMarkeK;
+                        ViewBag.lstMarkeK = " | " + lstMarkeK.Count;
+                    }
+                }
+                if (naziv != null && kratica != null)
+                {
+                    //lstMarke = lstMarkeN.Union(lstMarkeK).ToList();
+                    List<VoziloMarka> lstMarkeS = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) || item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();
+                    //lstMarke = lstMarkeS;
+                    ViewBag.lstMarkeS = " | " + lstMarkeS.Count;
+                }
+
+                switch (sortiraj)
+                {
+                    case "D_Id":
+                        lstMarke = lstMarke.OrderByDescending(x => x.Id).ToList();
+                        ViewBag.sortId = "A_Id";
+                        break;
+                    case "A_Naziv":
+                        lstMarke = lstMarke.OrderBy(x => x.Naziv).ToList();
+                        ViewBag.sortNaziv = "D_Naziv";
+                        break;
+                    case "D_Naziv":
+                        lstMarke = lstMarke.OrderByDescending(x => x.Naziv).ToList();
+                        ViewBag.sortNaziv = "A_Naziv";
+                        break;
+                    case "A_Kratica":
+                        lstMarke = lstMarke.OrderBy(x => x.Kratica).ToList();
+                        ViewBag.sortKratica = "D_Kratica";
+                        break;
+                    case "D_Kratica":
+                        lstMarke = lstMarke.OrderByDescending(x => x.Kratica).ToList();
+                        ViewBag.sortKratica = "A_Kratica";
+                        break;
+                    default:
+                        ViewBag.sortId = "D_Id";
+                        break;
+                }
+                lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
+                listaMarkeVM = lstMarkeVM.ToPagedList(str, 10);
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstMarke);
+            return View(listaMarkeVM);
         }
 
         // GET: Marka/Details/5
