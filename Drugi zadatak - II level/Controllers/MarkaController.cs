@@ -90,7 +90,7 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Details/5
         public ActionResult Details(int idMarke)
         {
-            VoziloMarkaVM markaVM = new VoziloMarkaVM();
+            VoziloMarkaVM markaVM = null;
             try
             {
                 VoziloMarka marka = Servis.DohvatiMarku(idMarke);
@@ -129,7 +129,7 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Edit/5
         public ActionResult Edit(int idMarke)
         {
-            VoziloMarkaVM markaVM = new VoziloMarkaVM();
+            VoziloMarkaVM markaVM = null;
 
             try
             {
@@ -164,7 +164,7 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Delete/5
         public ActionResult Delete(int idMarke)
         {
-            VoziloMarkaVM markaVM = new VoziloMarkaVM();
+            VoziloMarkaVM markaVM = null;
             try
             {
                 VoziloMarka marka = Servis.DohvatiMarku(idMarke);

@@ -40,7 +40,7 @@ namespace Drugi_zadatak___II_level.Controllers
             }
             try
             {
-                List<VoziloModel> lstModeli;
+                List<VoziloModel> lstModeli = null;
                 if (idMarke > 0)
                 {
                     lstModeli = Servis.DohvatiListuModela(idMarke);                    
@@ -134,7 +134,7 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model/Details/5
         public ActionResult Details(int idModela)
         {
-            VoziloModelVM modelVM = new VoziloModelVM();
+            VoziloModelVM modelVM = null;
 
             try
             {
@@ -175,8 +175,7 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model/Edit/5
         public ActionResult Edit(int idModela)
         {
-            VoziloModelVM modelVM = new VoziloModelVM();
-
+            VoziloModelVM modelVM = null;
             try
             {                
                 VoziloModel model = Servis.DohvatiModel(idModela);
@@ -210,7 +209,7 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model/Delete/5
         public ActionResult Delete(int idModela)
         {
-            VoziloModelVM modelVM = new VoziloModelVM();
+            VoziloModelVM modelVM = null;
 
             try
             {
