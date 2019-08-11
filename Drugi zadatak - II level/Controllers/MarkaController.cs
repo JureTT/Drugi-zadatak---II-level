@@ -34,29 +34,21 @@ namespace Drugi_zadatak___II_level.Controllers
             try
             {
                 List<VoziloMarka> lstMarke = Servis.DohvatiMarke();
-
-                
-                if (naziv != null || kratica != null)
-                {
-                    if (naziv != "")
-                    {
-                        List<VoziloMarka> lstMarkeN = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();
-                        //lstMarke = lstMarkeN;
-                        ViewBag.lstMarkeN = " | " + lstMarkeN.Count;
-                    }
-                    else if (kratica != "")
-                    {
-                        List<VoziloMarka> lstMarkeK = (from item in lstMarke where item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();
-                        //lstMarke = lstMarkeK;
-                        ViewBag.lstMarkeK = " | " + lstMarkeK.Count;
-                    }
+                                                  
+                if (naziv != "" && kratica != "" && naziv != null && kratica != null)
+                {                        
+                    lstMarke = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) || item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();                        
                 }
-                if (naziv != null && kratica != null)
+                else
                 {
-                    //lstMarke = lstMarkeN.Union(lstMarkeK).ToList();
-                    List<VoziloMarka> lstMarkeS = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) || item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();
-                    //lstMarke = lstMarkeS;
-                    ViewBag.lstMarkeS = " | " + lstMarkeS.Count;
+                    if (naziv != "" && naziv != null)
+                    {
+                        lstMarke = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();                            
+                    }
+                    if (kratica != "" && kratica != null)
+                    {
+                        lstMarke = (from item in lstMarke where item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();
+                    }
                 }
 
                 switch (sortiraj)
