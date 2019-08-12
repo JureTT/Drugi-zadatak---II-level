@@ -15,6 +15,8 @@ namespace Drugi_zadatak___II_level.Controllers
     {
         VoziloServis Servis = new VoziloServis();
         Mape Mapa = new Mape();
+        VoziloModel model = null;
+        VoziloModelVM modelVM = null;
 
         // GET: Model
         public ActionResult Index()
@@ -134,11 +136,9 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model/Details/5
         public ActionResult Details(int idModela)
         {
-            VoziloModelVM modelVM = null;
-
             try
             {
-                VoziloModel model = Servis.DohvatiModel(idModela);
+                model = Servis.DohvatiModel(idModela);
                 modelVM = Mapa.maper.Map<VoziloModelVM>(model);
             }
             catch (Exception ex)
@@ -161,7 +161,7 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             try
             {                
-                VoziloModel model = Mapa.maper.Map<VoziloModel>(modelVM);
+                model = Mapa.maper.Map<VoziloModel>(modelVM);
                 Servis.KreirajModel(model);
                 ViewBag.Message = "Model uspješno kreiran!";
             }
@@ -175,10 +175,9 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model/Edit/5
         public ActionResult Edit(int idModela)
         {
-            VoziloModelVM modelVM = null;
             try
             {                
-                VoziloModel model = Servis.DohvatiModel(idModela);
+                model = Servis.DohvatiModel(idModela);
                 modelVM = Mapa.maper.Map<VoziloModelVM>(model);
             }
             catch (Exception ex)
@@ -195,7 +194,7 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             try
             {
-                VoziloModel model = Mapa.maper.Map<VoziloModel>(modelVM);
+                model = Mapa.maper.Map<VoziloModel>(modelVM);
                 Servis.UrediModel(model);
                 ViewBag.Message = "Model uspješno uređen!";
             }
@@ -209,11 +208,9 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model/Delete/5
         public ActionResult Delete(int idModela)
         {
-            VoziloModelVM modelVM = null;
-
             try
             {
-                VoziloModel model = Servis.DohvatiModel(idModela);
+                model = Servis.DohvatiModel(idModela);
                 modelVM = Mapa.maper.Map<VoziloModelVM>(model);
             }
             catch (Exception ex)

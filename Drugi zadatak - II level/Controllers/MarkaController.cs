@@ -15,7 +15,9 @@ namespace Drugi_zadatak___II_level.Controllers
     {        
         VoziloServis Servis = new VoziloServis();
         Mape Mapa = new Mape();
-        
+        VoziloMarka marka = null;
+        VoziloMarkaVM markaVM = null;
+
         // GET: Marka
         public ActionResult Index()
         {           
@@ -90,10 +92,9 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Details/5
         public ActionResult Details(int idMarke)
         {
-            VoziloMarkaVM markaVM = null;
             try
             {
-                VoziloMarka marka = Servis.DohvatiMarku(idMarke);
+                marka = Servis.DohvatiMarku(idMarke);
                 markaVM = Mapa.maper.Map<VoziloMarkaVM>(marka);                
             }
             catch (Exception ex)
@@ -115,7 +116,7 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             try
             {
-                VoziloMarka marka = Mapa.maper.Map<VoziloMarka>(markaVM);
+                marka = Mapa.maper.Map<VoziloMarka>(markaVM);
                 Servis.KreirajMarku(marka);
                 ViewBag.Message = "Marka je uspješno upisana!";
             }
@@ -129,11 +130,9 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Edit/5
         public ActionResult Edit(int idMarke)
         {
-            VoziloMarkaVM markaVM = null;
-
             try
             {
-                VoziloMarka marka = Servis.DohvatiMarku(idMarke);
+                marka = Servis.DohvatiMarku(idMarke);
                 markaVM = Mapa.maper.Map<VoziloMarkaVM>(marka);
             }
             catch (Exception ex)
@@ -150,7 +149,7 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             try
             {
-                VoziloMarka marka = Mapa.maper.Map<VoziloMarka>(markaVM);
+                marka = Mapa.maper.Map<VoziloMarka>(markaVM);
                 Servis.UrediMarku(marka);
                 ViewBag.Message = "Marka uspješno uređena!";
             }
@@ -164,10 +163,9 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Marka/Delete/5
         public ActionResult Delete(int idMarke)
         {
-            VoziloMarkaVM markaVM = null;
             try
             {
-                VoziloMarka marka = Servis.DohvatiMarku(idMarke);
+                marka = Servis.DohvatiMarku(idMarke);
                 markaVM = Mapa.maper.Map<VoziloMarkaVM>(marka);
             }
             catch (Exception ex)
