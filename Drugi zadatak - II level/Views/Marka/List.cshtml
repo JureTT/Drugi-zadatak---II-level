@@ -14,6 +14,7 @@
     int str = Convert.ToInt16(Request.QueryString["strana"]);
     if (redni == "D_Id")
     {
+        str = (str == 0) ? 1 : str;
         a = br + 1 - ((str - 1) * 10);
     }
     else
@@ -68,10 +69,6 @@
                 else
                 {
                     @(a = a + 1)
-                    @ViewBag.lstMarkeN
-                    @ViewBag.lstMarkeK
-                    @ViewBag.lstMarkeS
-                    @ViewBag.uvjet
                 }
             </th>
             <td>

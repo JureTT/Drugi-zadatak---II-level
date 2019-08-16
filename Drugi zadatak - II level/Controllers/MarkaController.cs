@@ -25,68 +25,38 @@ namespace Drugi_zadatak___II_level.Controllers
         }
 
         public ActionResult List(int? strana, string sortiraj, string naziv, string kratica)
-        {
+        {           
+            IPagedList<VoziloMarkaVM> lstMarkePG = null;
             List<VoziloMarkaVM> lstMarkeVM = null;
-            IPagedList<VoziloMarkaVM> listaMarkeVM = null;
-            ViewBag.sortId = "A_Id";
-            ViewBag.sortNaziv = "A_Naziv";
-            ViewBag.sortKratica = "A_Kratica";
-            int str = (strana == null)? str = 1 : str = strana.Value;
+            List<VoziloMarka> lstMarke = null;
+            ViewBag.sortId = (sortiraj == "A_Id")? "D_Id": "A_Id";
+            ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
+            ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
+            Sortiranje sorter = new Sortiranje();
+            sorter.OdrediSortiranje(sortiraj);
+            Filteri filter = new Filteri();
+            filter.UnesiFiltere(naziv, kratica);
+            Stranice stranica = new Stranice();
+            stranica.UnesiStranice(strana);
 
             try
             {
-                List<VoziloMarka> lstMarke = Servis.DohvatiMarke();
-                                                  
-                if (naziv != "" && kratica != "" && naziv != null && kratica != null)
-                {                        
-                    lstMarke = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) || item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();                        
+                if (naziv != null || kratica != null || sortiraj != null || strana != null)
+                {
+                    lstMarke = Servis.DohvatiMarke(sorter, filter, stranica);                    
                 }
                 else
                 {
-                    if (naziv != "" && naziv != null)
-                    {
-                        lstMarke = (from item in lstMarke where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();                            
-                    }
-                    if (kratica != "" && kratica != null)
-                    {
-                        lstMarke = (from item in lstMarke where item.Kratica.ToLower().Contains(kratica.ToLower()) select item).ToList();
-                    }
-                }
-
-                switch (sortiraj)
-                {
-                    case "D_Id":
-                        lstMarke = lstMarke.OrderByDescending(x => x.Id).ToList();
-                        ViewBag.sortId = "A_Id";
-                        break;
-                    case "A_Naziv":
-                        lstMarke = lstMarke.OrderBy(x => x.Naziv).ToList();
-                        ViewBag.sortNaziv = "D_Naziv";
-                        break;
-                    case "D_Naziv":
-                        lstMarke = lstMarke.OrderByDescending(x => x.Naziv).ToList();
-                        ViewBag.sortNaziv = "A_Naziv";
-                        break;
-                    case "A_Kratica":
-                        lstMarke = lstMarke.OrderBy(x => x.Kratica).ToList();
-                        ViewBag.sortKratica = "D_Kratica";
-                        break;
-                    case "D_Kratica":
-                        lstMarke = lstMarke.OrderByDescending(x => x.Kratica).ToList();
-                        ViewBag.sortKratica = "A_Kratica";
-                        break;
-                    default:
-                        ViewBag.sortId = "D_Id";
-                        break;
+                lstMarke = Servis.DohvatiMarke();
                 }
                 lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
-                listaMarkeVM = lstMarkeVM.ToPagedList(str, 10);
+                lstMarkePG = lstMarkeVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(listaMarkeVM);
+            return View(lstMarkePG);
         }
 
         // GET: Marka/Details/5

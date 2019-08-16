@@ -24,80 +24,52 @@ namespace Drugi_zadatak___II_level.Controllers
             return View("Error");
         }        
         public ActionResult List(int? idMarke,int? strana, string sortiraj, string naziv)
-        {            
+        {
+            IPagedList<VoziloModelVM> lstModeliPG = null;
             List<VoziloModelVM> lstModeliVM = null;
-            IPagedList<VoziloModelVM> listaModeliVM = null;
-            ViewBag.sortId = "A_Id";
-            ViewBag.sortIdMarke = "A_IdMarke";
-            ViewBag.sortNaziv = "A_Naziv";
-            ViewBag.sortKratica = "A_Kratica";
-            int str;
-            if (strana == null)
-            {
-                str = 1;
-            }
-            else
-            {
-                str = strana.Value;
-            }
+            List<VoziloModel> lstModeli = null;
+            ViewBag.sortId = (sortiraj == "A_Id")? "D_Id": "A_Id";
+            ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
+            ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
+            ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
+            Sortiranje sorter = new Sortiranje();
+            sorter.OdrediSortiranje(sortiraj);
+            Filteri filter = new Filteri();
+            filter.UnesiFiltere(naziv, idMarke);
+            Stranice stranica = new Stranice();
+            stranica.UnesiStranice(strana); 
+
             try
             {
-                List<VoziloModel> lstModeli = null;
-                if (idMarke > 0)
+                if (naziv != null || idMarke != null || sortiraj != null || strana != null)
                 {
-                    lstModeli = Servis.DohvatiListuModela(idMarke);                    
+                    lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
                 }
                 else
                 {
                     lstModeli = Servis.DohvatiModele();
                 }
-                if (naziv != null)
-                {
-                    lstModeli = (from item in lstModeli where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();
-                }
-
-                switch (sortiraj)
-                {
-                    case "D_Id":
-                        lstModeli = lstModeli.OrderByDescending(x => x.Id).ToList();
-                        ViewBag.sortId = "A_Id";
-                        break;
-                    case "A_IdMarke":
-                        lstModeli = lstModeli.OrderBy(x => x.IdMarke).ToList();
-                        ViewBag.sortIdMarke = "D_IdMarke";
-                        break;
-                    case "D_IdMarke":
-                        lstModeli = lstModeli.OrderByDescending(x => x.IdMarke).ToList();
-                        ViewBag.sortIdMarke = "A_IdMarke";
-                        break;
-                    case "A_Naziv":
-                        lstModeli = lstModeli.OrderBy(x => x.Naziv).ToList();
-                        ViewBag.sortNaziv = "D_Naziv";
-                        break;
-                    case "D_Naziv":
-                        lstModeli = lstModeli.OrderByDescending(x => x.Naziv).ToList();
-                        ViewBag.sortNaziv = "A_Naziv";
-                        break;
-                    case "A_Kratica":
-                        lstModeli = lstModeli.OrderBy(x => x.Kratica).ToList();
-                        ViewBag.sortKratica = "D_Kratica";
-                        break;
-                    case "D_Kratica":
-                        lstModeli = lstModeli.OrderByDescending(x => x.Kratica).ToList();
-                        ViewBag.sortKratica = "A_Kratica";
-                        break;
-                    default:
-                        ViewBag.sortId = "D_Id"; 
-                        break;
-                 }                
                 lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
-                listaModeliVM = lstModeliVM.ToPagedList(str, 10);
+                lstModeliPG = lstModeliVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "Greška kod dohvaćanja popisa modela vozila. Opis: " + ex.Message;
+                ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(listaModeliVM);
+            return View(lstModeliPG);
+            
+                //if (idMarke > 0)
+                //{
+                //    lstModeli = Servis.DohvatiListuModela(idMarke);                    
+                //}
+                //else
+                //{
+                //    lstModeli = Servis.DohvatiModele();
+                //}
+                //if (naziv != null)
+                //{
+                //    lstModeli = (from item in lstModeli where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();
+                //}
         }
         //[HttpPost]//ovo ti najvjerovatnije ne treba
         //public ActionResult List(int idMarke,int? strana)
