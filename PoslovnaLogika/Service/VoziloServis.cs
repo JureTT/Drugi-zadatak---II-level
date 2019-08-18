@@ -26,20 +26,45 @@ namespace PoslovnaLogika.Service
 
             if (filter.Naziv != "" && filter.Kratica != "" && filter.Naziv != null && filter.Kratica != null)
             {
-                kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' OR Kratica LIKE '%" + filter.Kratica + "%' " + sorter.Sort + " ;").ToList();
+                //kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' OR Kratica LIKE '%" + filter.Kratica + "%' " + sorter.Sort + " ;").ToList();
                 //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.Kratica.ToLower().Contains(filter.Kratica.ToLower()) select item).ToList();
+
+                if (sorter.Poredak == "desc")
+                {
+                    kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.Kratica.ToLower().Contains(filter.Kratica.ToLower()) select item).OrderByDescending(x => sorter.Stupac).ToList();
+                }
+                else
+                {
+                    kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.Kratica.ToLower().Contains(filter.Kratica.ToLower()) select item).OrderBy(x => sorter.Stupac).ToList();
+                }
             }
             else
             {
                 if (filter.Naziv != "" && filter.Naziv != null)
                 {
-                    kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
+                    //kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
                     //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).ToList();
+                    if (sorter.Poredak == "desc")
+                    {
+                        kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderByDescending(x => sorter.Stupac).ToList();
+                    }
+                    else
+                    {
+                        kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => sorter.Stupac).ToList();
+                    }
                 }
                 if (filter.Kratica != "" && filter.Kratica != null)
                 {
-                    kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Kratica LIKE '%" + filter.Kratica + "%' " + sorter.Sort + " ;").ToList();
+                    //kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Kratica LIKE '%" + filter.Kratica + "%' " + sorter.Sort + " ;").ToList();
                     //kolekcija = (from item in kolekcija where item.Kratica.ToLower().Contains(filter.Kratica.ToLower()) select item).ToList();
+                    if (sorter.Poredak == "desc")
+                    {
+                        kolekcija = (from item in kolekcija where item.Kratica.ToLower().Contains(filter.Kratica.ToLower()) select item).OrderByDescending(x => sorter.Stupac).ToList();
+                    }
+                    else
+                    {
+                        kolekcija = (from item in kolekcija where item.Kratica.ToLower().Contains(filter.Kratica.ToLower()) select item).OrderBy(x => sorter.Stupac).ToList();
+                    }
                 }
             }
             return kolekcija;
@@ -92,20 +117,44 @@ namespace PoslovnaLogika.Service
 
             if (filter.Naziv != "" && filter.IdMarke >= 0 && filter.Naziv != null && filter.IdMarke != null)
             {
-                kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' OR IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
+                //kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' OR IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
                 //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.IdMarke == filter.IdMarke select item).ToList();
+                if(sorter.Poredak == "desc")
+                {
+                    kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.IdMarke == filter.IdMarke select item).OrderByDescending(x => sorter.Stupac).ToList();
+                }
+                else
+                {
+                    kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.IdMarke == filter.IdMarke select item).OrderBy(x => sorter.Stupac).ToList();
+                }
             }
             else
             {
                 if (filter.Naziv != "" && filter.Naziv != null)
                 {
-                    kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
+                    //kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
                     //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).ToList();
+                    if (sorter.Poredak == "desc")
+                    {
+                        kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderByDescending(x => sorter.Stupac).ToList();
+                    }
+                    else
+                    {
+                        kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => sorter.Stupac).ToList();
+                    }
                 }
                 if (filter.IdMarke > 0 && filter.IdMarke != null)
                 {
-                    kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
+                    //kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
                     //kolekcija = (from item in kolekcija where item.IdMarke == filter.IdMarke select item).ToList();
+                    if (sorter.Poredak == "desc")
+                    {
+                        kolekcija = (from item in kolekcija where item.IdMarke == filter.IdMarke select item).OrderByDescending(x => sorter.Stupac).ToList();
+                    }
+                    else
+                    {
+                        kolekcija = (from item in kolekcija where item.IdMarke == filter.IdMarke select item).OrderBy(x => sorter.Stupac).ToList();
+                    }
                 }
             }
             return kolekcija;
