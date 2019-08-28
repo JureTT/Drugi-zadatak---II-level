@@ -8,19 +8,30 @@ namespace PoslovnaLogika.Models
 {
     public class Stranice : IStranice
     {
-        int brIspisa = 10;
-        int strana;
-        public int Strana { get => strana; set => strana = value; }
-        public int BrIspisa { get => brIspisa; set => brIspisa = value; }
+        public int Strana { get; set; }
+        public int BrStrana { get; set; }
+        public int BrIspisa { get; set; }
+        public int BrSvihIspisa { get; set; }
 
+        public List<VoziloMarka> MarkaStrana { get; set; } //privremeno, sredi imena varijabli kasnije
+        public List<VoziloModel> ModelStrana { get; set; } //privremeno, sredi imena varijabli kasnije
+
+        public Stranice()
+        {
+            this.BrIspisa = 10;
+        }
         public void UnesiStranice(int? strana)
         {
-            this.Strana = (strana == null) ? this.Strana = 1 : this.Strana = (int)strana;
+            this.Strana = (int)strana;
+        }
+        public void UnesiBrIspisa(int? brIspisa)
+        {
+            this.BrIspisa = (brIspisa == null) ? 10 : (int)brIspisa;
         }
 
-        //public void UnesiBrIspisa(int? brIspisa)
+        //public void odrediBrStranica()
         //{
-        //    this.BrIspisa = (brIspisa == null) ? this.brIspisa = 10 : this.BrIspisa = (int)brIspisa; 
+        //    this.BrStrana = (BrSvihIspisa % BrIspisa != 0) ? (BrSvihIspisa / BrIspisa) + 1 : BrSvihIspisa / BrIspisa;
         //}
     }
-}
+} 

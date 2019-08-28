@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Filteri.cs" />
+    <Compile Include="Models\VoziloFilter.cs" />
     <Compile Include="Models\IFilteri.cs" />
     <Compile Include="Models\ISortiranje.cs" />
     <Compile Include="Models\IStranice.cs" />

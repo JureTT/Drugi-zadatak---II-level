@@ -23,40 +23,46 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             return View("Error");
         }        
-        public ActionResult List(int? idMarke,int? strana, string sortiraj, string naziv)
+        public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv) // int? idMarke)
         {
-            IPagedList<VoziloModelVM> lstModeliPG = null;
+            //IPagedList<VoziloModelVM> lstModeliPG = null;
             List<VoziloModelVM> lstModeliVM = null;
             List<VoziloModel> lstModeli = null;
-            ViewBag.sortId = (sortiraj == "A_Id")? "D_Id": "A_Id";
+            ViewBag.sortId = (String.IsNullOrEmpty(sortiraj)) ? "D_Id" : (sortiraj == "A_Id") ? "D_Id" : "A_Id";
             ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
             Sortiranje sorter = new Sortiranje();
-            sorter.OdrediSortiranje(sortiraj);
-            Filteri filter = new Filteri();
-            filter.UnesiFiltere(naziv, idMarke);
+            sorter.OdrediSortiranje(sortiraj ?? "A_Id");
+            VoziloFilter filter = new VoziloFilter();
+            filter.UnesiFiltere(naziv);
             Stranice stranica = new Stranice();
-            stranica.UnesiStranice(strana); 
+            stranica.UnesiStranice(strana ?? 1);
+            stranica.UnesiBrIspisa(brIspisa);
 
             try
             {
-                if (naziv != null || idMarke != null || sortiraj != null || strana != null)
+                if (naziv != null || sortiraj != null || strana != null)
                 {
-                    lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
+                    stranica = Servis.DohvatiModele(sorter, filter, stranica);
+                    lstModeli = stranica.ModelStrana;
+                    lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
                 else
                 {
                     lstModeli = Servis.DohvatiModele();
+                    stranica.BrSvihIspisa = lstModeli.Count();
+                    lstModeli = lstModeli.Skip((stranica.Strana - 1) * stranica.BrIspisa).Take(stranica.BrIspisa).ToList();
+                    lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
-                lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
-                lstModeliPG = lstModeliVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
+                //lstModeliPG = lstModeliVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
+                ViewBag.stranica = stranica;
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstModeliPG);
+            return View(lstModeliVM);
             
                 //if (idMarke > 0)
                 //{

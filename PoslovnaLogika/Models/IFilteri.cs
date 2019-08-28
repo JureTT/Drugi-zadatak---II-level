@@ -2,7 +2,10 @@
 {
     public interface IFilteri
     {
-        string Kratica { get; set; }
+        int? IdMarke { get; set; }
         string Naziv { get; set; }
+
+        void UnesiFiltere(string naziv);
+        void UnesiFiltere(string naziv, int? idMarke);
     }
 }

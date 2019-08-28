@@ -3,32 +3,36 @@
 @using Drugi_zadatak___II_level.Models;
 @using PagedList;
 @using PagedList.Mvc;
-@model PagedList.IPagedList<Drugi_zadatak___II_level.Models.VoziloModelVM>
+@model List<Drugi_zadatak___II_level.Models.VoziloModelVM>
 
 @{
     ViewBag.Title = "List";
-    VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
-    Mape Mapa = new Mape();
-    List<VoziloMarka> lista = servis.DohvatiMarke();
-    List<VoziloMarkaVM> listaVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lista);
-    //VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };     // nepotrebno
+    //VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
+    //Mape Mapa = new Mape();
+    //List<VoziloMarka> lista = servis.DohvatiMarke();
+    //List<VoziloMarkaVM> listaVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lista);
+    ////VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };     // nepotrebno
     //listaVM.Insert(0, svaVozila);
 
+    Stranice stranica = ViewBag.stranica;
+    int str = stranica.Strana;
+    int[] stranice = new int[5] {5, 10, 15, 20, 25};
+    int brSvi = stranica.BrSvihIspisa;
+    int brIsp = stranica.BrIspisa;
+    int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
     int a = 0;      // kod za listanje stranica u oba smjera
-    int br = Model.TotalItemCount;
-    string redni = Request.QueryString["sortiraj"];
-    int str = Convert.ToInt16(Request.QueryString["strana"]);
-    if (redni == "D_Id")
+    string sort = Request.QueryString["sortiraj"];
+    if (sort == "D_Id")
     {
-        str = (str == 0) ? 1 : str;
-        a = br + 1 - ((str - 1) * 10);
+        //str = (str == 0) ? 1 : str;
+        a = brSvi + 1 - ((str - 1) * brIsp);
     }
     else
     {
-        if (str > 0)
-        {
-            a = (str - 1) * 10;
-        }
+        //if (str > 0)
+        //{
+        a = (str - 1) * brIsp;
+        ////}
     }
 }
 
@@ -39,14 +43,22 @@
 
     @using (Html.BeginForm("List", "Model", FormMethod.Get))
     {
-        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
-        @Html.DropDownList("idMarke",
-              listaVM.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
-              "--odaberi--",
-              new
-              {
-                  onchange = "submit()"
-              })
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Veličina popisa: </label>
+            @Html.DropDownList("brIspisa",
+                    stranice.Select(item => new SelectListItem { Value = item.ToString(), Text = item.ToString(), Selected = item.ToString() == (Request.QueryString["brIspisa"]??"10")}),
+                    
+                    new
+                    {
+                        onchange = "submit()"
+                    })
+        @*<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
+            @Html.DropDownList("idMarke",
+                    listaVM.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
+                    "--odaberi--",
+                    new
+                    {
+                        onchange = "submit()"
+                    })*@
         <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modeli vozila: </label>
         @Html.TextBox("Naziv")
         <input type="submit" value="Traži" />
@@ -56,16 +68,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
+            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th>
-            @Html.ActionLink("Šifra marke", "List", new { sortiraj = ViewBag.sortIdMarke, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
+            @Html.ActionLink("Šifra marke", "List", new { sortiraj = ViewBag.sortIdMarke,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th>
-            @Html.ActionLink("Naziv", "List", new { sortiraj = ViewBag.sortNaziv, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
+            @Html.ActionLink("Naziv", "List", new { sortiraj = ViewBag.sortNaziv,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th>
-            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"] })
+            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th></th>
     </tr>
@@ -73,7 +85,7 @@
     {
         <tr>
             <th>
-                @if (redni == "D_Id")
+                @if (sort == "D_Id")
                 {
                     @(a = a - 1)
                 }
@@ -98,7 +110,32 @@
             </td>
         </tr>
     }
-
 </table>
 
-@Html.PagedListPager(Model, strana => Url.Action("List",  new { strana, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+@if (brStr > 1)
+{
+    <ul class="pagination">
+        @if (str > 1)
+        {
+            <li>@Html.ActionLink("«", "List", new { sortiraj = Request.QueryString["Sortiraj"],  naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = str - 1 })</li>
+        }
+
+        @for (int i = 1; i <= brStr; i++)
+        {
+            string aktivno = null;
+            if (i == str)
+            {
+                aktivno = "class=active";
+            }
+
+            <li @aktivno>@Html.ActionLink(i.ToString(), "List", new { sortiraj = Request.QueryString["Sortiraj"], naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = i, })</li>
+        }
+
+        @if (str < brStr)
+        {
+            <li>@Html.ActionLink("»", "List", new { sortiraj = Request.QueryString["Sortiraj"],  naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = str + 1 })</li>
+        }
+    </ul>
+}
+<!--Html.PagedListPager(Model, strana => Url.Action("List",  new { strana, idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+    -->
