@@ -94,12 +94,29 @@ namespace PoslovnaLogika.Service
 
             string upit = "SELECT* FROM VoziloModels ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
 
-            if (!String.IsNullOrEmpty(filter.Naziv))
+            if (!String.IsNullOrEmpty(filter.Naziv) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
-                //kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' OR IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
-                //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.IdMarke == filter.IdMarke select item).ToList();
-                strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Count();
-                strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                if (!String.IsNullOrEmpty(filter.Naziv) && filter.IdMarke > 0 && filter.IdMarke != null)
+                {
+                    //kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' OR IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
+                    //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.IdMarke == filter.IdMarke select item).ToList();
+                    strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) && item.IdMarke == filter.IdMarke select item).Count();
+                    strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) && item.IdMarke == filter.IdMarke select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
+                else
+                { 
+                    if (!String.IsNullOrEmpty(filter.Naziv))
+                    {                        
+                        strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Count();
+                        strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                    }
+
+                    if (filter.IdMarke > 0 && filter.IdMarke != null)
+                    {
+                        strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.IdMarke == filter.IdMarke select item).Count();
+                        strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.IdMarke == filter.IdMarke select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                    }
+                }
             }
             else
             {
@@ -107,11 +124,6 @@ namespace PoslovnaLogika.Service
                 strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
             }
                      
-            //if (filter.IdMarke > 0 && filter.IdMarke != null)
-            //{
-            //    strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.IdMarke == filter.IdMarke select item).Count();
-            //    strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.IdMarke == filter.IdMarke select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
-            //}
             return strIspis;
         }
         //// -- izgleda da je ova metoda nepotrebna uz nove promjene

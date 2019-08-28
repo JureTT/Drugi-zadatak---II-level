@@ -23,7 +23,7 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             return View("Error");
         }        
-        public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv) // int? idMarke)
+        public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv, int? idMarke)
         {
             //IPagedList<VoziloModelVM> lstModeliPG = null;
             List<VoziloModelVM> lstModeliVM = null;
@@ -35,7 +35,7 @@ namespace Drugi_zadatak___II_level.Controllers
             VoziloSorter sorter = new VoziloSorter();
             sorter.OdrediSortiranje(sortiraj ?? "A_Id");
             VoziloFilter filter = new VoziloFilter();
-            filter.UnesiFiltere(naziv);
+            filter.UnesiFiltere(naziv, idMarke);
             VoziloStranica stranica = new VoziloStranica();
             stranica.UnesiStranice(strana ?? 1);
             stranica.UnesiBrIspisa(brIspisa);

@@ -7,9 +7,9 @@
 
 @{
     ViewBag.Title = "List";
-    //VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
+    VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
     //Mape Mapa = new Mape();
-    //List<VoziloMarka> lista = servis.DohvatiMarke();
+    List<VoziloMarka> lista = servis.DohvatiMarke();
     //List<VoziloMarkaVM> listaVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lista);
     ////VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };     // nepotrebno
     //listaVM.Insert(0, svaVozila);
@@ -51,14 +51,14 @@
                     {
                         onchange = "submit()"
                     })
-        @*<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
             @Html.DropDownList("idMarke",
-                    listaVM.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
+                    lista.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
                     "--odaberi--",
                     new
                     {
                         onchange = "submit()"
-                    })*@
+                    })
         <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modeli vozila: </label>
         @Html.TextBox("Naziv")
         <input type="submit" value="Traži" />
@@ -68,16 +68,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId,  naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th>
-            @Html.ActionLink("Šifra marke", "List", new { sortiraj = ViewBag.sortIdMarke,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+            @Html.ActionLink("Šifra marke", "List", new { sortiraj = ViewBag.sortIdMarke,  naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th>
-            @Html.ActionLink("Naziv", "List", new { sortiraj = ViewBag.sortNaziv,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+            @Html.ActionLink("Naziv", "List", new { sortiraj = ViewBag.sortNaziv,  naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th>
-            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica,  naziv = Request.QueryString["naziv"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica,  naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
         </th>
         <th></th>
     </tr>
@@ -117,7 +117,7 @@
     <ul class="pagination">
         @if (str > 1)
         {
-            <li>@Html.ActionLink("«", "List", new { sortiraj = Request.QueryString["Sortiraj"],  naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = str - 1 })</li>
+            <li>@Html.ActionLink("«", "List", new { sortiraj = Request.QueryString["Sortiraj"],  naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], brIspisa = Request.QueryString["brIspisa"], strana = str - 1 })</li>
         }
 
         @for (int i = 1; i <= brStr; i++)
@@ -128,12 +128,12 @@
                 aktivno = "class=active";
             }
 
-            <li @aktivno>@Html.ActionLink(i.ToString(), "List", new { sortiraj = Request.QueryString["Sortiraj"], naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = i, })</li>
+            <li @aktivno>@Html.ActionLink(i.ToString(), "List", new { sortiraj = Request.QueryString["Sortiraj"], naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], brIspisa = Request.QueryString["brIspisa"], strana = i, })</li>
         }
 
         @if (str < brStr)
         {
-            <li>@Html.ActionLink("»", "List", new { sortiraj = Request.QueryString["Sortiraj"],  naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = str + 1 })</li>
+            <li>@Html.ActionLink("»", "List", new { sortiraj = Request.QueryString["Sortiraj"], naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], brIspisa = Request.QueryString["brIspisa"], strana = str + 1 })</li>
         }
     </ul>
 }
