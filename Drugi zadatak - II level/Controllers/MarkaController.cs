@@ -32,11 +32,11 @@ namespace Drugi_zadatak___II_level.Controllers
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj))? "D_Id" : (sortiraj == "A_Id") ? "D_Id": "A_Id";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
-            Sortiranje sorter = new Sortiranje();            
+            VoziloSorter sorter = new VoziloSorter();            
             sorter.OdrediSortiranje(sortiraj ?? "A_Id");
             VoziloFilter filter = new VoziloFilter();
             filter.UnesiFiltere(naziv);
-            Stranice stranica = new Stranice();
+            VoziloStranica stranica = new VoziloStranica();
             stranica.UnesiStranice(strana ?? 1);
             stranica.UnesiBrIspisa(brIspisa);
 

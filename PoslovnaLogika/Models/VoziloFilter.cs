@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class VoziloFilter : IFilteri
+    public class VoziloFilter : IVoziloFilter
     {        
         public string Naziv { get; set; }
         public int? IdMarke { get; set; }

@@ -20,10 +20,10 @@ namespace PoslovnaLogika.Service
             List<VoziloMarka> kolekcija = (from item in _db.VoziloMarke select item).ToList();
             return kolekcija;
         }
-        public Stranice DohvatiMarke(ISortiranje sort, IFilteri filter, IStranice stranica)
+        public VoziloStranica DohvatiMarke(IVoziloSorter sort, IVoziloFilter filter, IVoziloStranica stranica)
         {
-            Stranice strIspis = (Stranice)stranica;
-            Sortiranje sorter = (Sortiranje)sort;
+            VoziloStranica strIspis = (VoziloStranica)stranica;
+            VoziloSorter sorter = (VoziloSorter)sort;
             sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
            
             string upit = "SELECT* FROM VoziloMarkas ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
@@ -86,10 +86,10 @@ namespace PoslovnaLogika.Service
             List<VoziloModel> kolekcija = (from item in _db.VoziloModeli select item).ToList();
             return kolekcija;
         }
-        public Stranice DohvatiModele(ISortiranje sort, IFilteri filter, IStranice stranica)
+        public VoziloStranica DohvatiModele(IVoziloSorter sort, IVoziloFilter filter, IVoziloStranica stranica)
         {
-            Stranice strIspis = (Stranice)stranica;
-            Sortiranje sorter = (Sortiranje)sort;
+            VoziloStranica strIspis = (VoziloStranica)stranica;
+            VoziloSorter sorter = (VoziloSorter)sort;
             sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
 
             string upit = "SELECT* FROM VoziloModels ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";

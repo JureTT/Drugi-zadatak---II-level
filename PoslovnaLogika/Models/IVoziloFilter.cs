@@ -1,6 +1,6 @@
 ﻿namespace PoslovnaLogika.Models
 {
-    public interface IFilteri
+    public interface IVoziloFilter
     {
         int? IdMarke { get; set; }
         string Naziv { get; set; }

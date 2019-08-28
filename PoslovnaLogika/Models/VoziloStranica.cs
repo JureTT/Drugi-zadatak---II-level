@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class Stranice : IStranice
+    public class VoziloStranica : IVoziloStranica
     {
         public int Strana { get; set; }
         public int BrStrana { get; set; }
@@ -16,7 +16,7 @@ namespace PoslovnaLogika.Models
         public List<VoziloMarka> MarkaStrana { get; set; } //privremeno, sredi imena varijabli kasnije
         public List<VoziloModel> ModelStrana { get; set; } //privremeno, sredi imena varijabli kasnije
 
-        public Stranice()
+        public VoziloStranica()
         {
             this.BrIspisa = 10;
         }

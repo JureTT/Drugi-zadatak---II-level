@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class Sortiranje : ISortiranje
+    public class VoziloSorter : IVoziloSorter
     {        
         public string Poredak { get; set; }
         public string Stupac { get; set; }

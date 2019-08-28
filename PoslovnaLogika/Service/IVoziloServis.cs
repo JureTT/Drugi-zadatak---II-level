@@ -9,7 +9,7 @@ namespace PoslovnaLogika.Service
     {        
         List<VoziloMarka> DohvatiMarke();
         //List<VoziloMarka> DohvatiMarke(ISortiranje sorter, IFilteri filter, IStranice stranica);
-        Stranice DohvatiMarke(ISortiranje sorter, IFilteri filter, IStranice stranica);
+        VoziloStranica DohvatiMarke(IVoziloSorter sorter, IVoziloFilter filter, IVoziloStranica stranica);
         VoziloMarka DohvatiMarku(int idMarka);
         void IzbrisiMarku(int idMarke);
         void KreirajMarku(IVoziloMarka marka);
@@ -17,7 +17,7 @@ namespace PoslovnaLogika.Service
 
         List<VoziloModel> DohvatiModele();
         //List<VoziloModel> DohvatiModele(ISortiranje sorter, IFilteri filter, IStranice stranica);
-        Stranice DohvatiModele(ISortiranje sorter, IFilteri filter, IStranice stranica);
+        VoziloStranica DohvatiModele(IVoziloSorter sorter, IVoziloFilter filter, IVoziloStranica stranica);
         //List<VoziloModel> DohvatiListuModela(int? idMarke);
         VoziloModel DohvatiModel(int idModela);
         void IzbrisiModel(int idModela);
