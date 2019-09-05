@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class VoziloStranica : IVoziloStranica
+    public class Stranica : IStranica
     {
         public int Strana { get; set; }
         public int BrStrana { get; set; }
         public int BrIspisa { get; set; }
         public int BrSvihIspisa { get; set; }
 
-        public List<VoziloMarka> MarkaStrana { get; set; } //privremeno, sredi imena varijabli kasnije
-        public List<VoziloModel> ModelStrana { get; set; } //privremeno, sredi imena varijabli kasnije
+        public dynamic ListaIspisa { get; set; }    // -- radi, ali idemo na drugu soluciju
+        //public List<VoziloMarka> MarkaStrana { get; set; }    //privremeno, sredi imena varijabli kasnije
+        //public List<VoziloModel> ModelStrana { get; set; }    //privremeno, sredi imena varijabli kasnije
 
-        public VoziloStranica()
+        public Stranica()
         {
             this.BrIspisa = 10;
         }

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using PagedList;
 using PagedList.Mvc;
+using Filter = PoslovnaLogika.Models.Filter;
 
 namespace Drugi_zadatak___II_level.Controllers
 {
@@ -32,11 +33,9 @@ namespace Drugi_zadatak___II_level.Controllers
             ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
-            VoziloSorter sorter = new VoziloSorter();
-            sorter.OdrediSortiranje(sortiraj ?? "A_Id");
-            VoziloFilter filter = new VoziloFilter();
-            filter.UnesiFiltere(naziv, idMarke);
-            VoziloStranica stranica = new VoziloStranica();
+            VoziloSorter sorter = new VoziloSorter(sortiraj ?? "A_Id");
+            Filter filter = new Filter(naziv, idMarke);
+            Stranica stranica = new Stranica();
             stranica.UnesiStranice(strana ?? 1);
             stranica.UnesiBrIspisa(brIspisa);
 
@@ -44,8 +43,8 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    stranica = Servis.DohvatiModele(sorter, filter, stranica);
-                    lstModeli = stranica.ModelStrana;
+                    (lstModeli, stranica.BrSvihIspisa) = Servis.DohvatiModele(sorter, filter, stranica);
+                    //lstModeli = stranica.ListaIspisa;
                     lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
                 else

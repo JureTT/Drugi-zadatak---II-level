@@ -62,13 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\IVoziloFilter.cs" />
+    <Compile Include="Models\IFilter.cs" />
     <Compile Include="Models\IVoziloSorter.cs" />
-    <Compile Include="Models\IVoziloStranica.cs" />
-    <Compile Include="Models\VoziloFilter.cs" />
+    <Compile Include="Models\IStranica.cs" />
+    <Compile Include="Models\Filter.cs" />
     <Compile Include="Models\IVoziloMarka.cs" />
     <Compile Include="Models\IVoziloModel.cs" />
-    <Compile Include="Models\VoziloStranica.cs" />
+    <Compile Include="Models\Stranica.cs" />
     <Compile Include="Models\VoziloSorter.cs" />
     <Compile Include="Models\VoziloMarka.cs" />
     <Compile Include="Models\VoziloModel.cs" />

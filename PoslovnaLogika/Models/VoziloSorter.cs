@@ -11,7 +11,7 @@ namespace PoslovnaLogika.Models
         public string Poredak { get; set; }
         public string Stupac { get; set; }
 
-        public void OdrediSortiranje(string sort)
+        public VoziloSorter(string sort)
         {
             this.Poredak = sort.Substring(0, 1);
             this.Stupac = sort.Substring(2);

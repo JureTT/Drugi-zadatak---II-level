@@ -8,16 +8,16 @@ namespace PoslovnaLogika.Service
     public interface IVoziloServis
     {        
         List<VoziloMarka> DohvatiMarke();
-        //List<VoziloMarka> DohvatiMarke(ISortiranje sorter, IFilteri filter, IStranice stranica);
-        VoziloStranica DohvatiMarke(IVoziloSorter sorter, IVoziloFilter filter, IVoziloStranica stranica);
+        (List<VoziloMarka>, int) DohvatiMarke(IVoziloSorter sorter, IFilter filter, IStranica stranica);
+        //Stranica DohvatiMarke(IVoziloSorter sorter, IVoziloFilter filter, IStranica stranica);
         VoziloMarka DohvatiMarku(int idMarka);
         void IzbrisiMarku(int idMarke);
         void KreirajMarku(IVoziloMarka marka);
         void UrediMarku(IVoziloMarka marka);
 
         List<VoziloModel> DohvatiModele();
-        //List<VoziloModel> DohvatiModele(ISortiranje sorter, IFilteri filter, IStranice stranica);
-        VoziloStranica DohvatiModele(IVoziloSorter sorter, IVoziloFilter filter, IVoziloStranica stranica);
+        (List<VoziloModel>, int) DohvatiModele(IVoziloSorter sorter, IFilter filter, IStranica stranica);
+        //Stranica DohvatiModele(IVoziloSorter sorter, IVoziloFilter filter, IStranica stranica);
         //List<VoziloModel> DohvatiListuModela(int? idMarke);
         VoziloModel DohvatiModel(int idModela);
         void IzbrisiModel(int idModela);

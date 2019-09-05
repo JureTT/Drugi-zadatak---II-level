@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class VoziloFilter : IVoziloFilter
+    public class Filter : IFilter
     {        
-        public string Naziv { get; set; }
+        public string PretragaUpita { get; set; }
         public int? IdMarke { get; set; }
 
-        public void UnesiFiltere(string naziv)
+        public Filter(string pretraga)
         {
-            this.Naziv = naziv;
+            this.PretragaUpita = pretraga;
         }
-        public void UnesiFiltere(string naziv, int? idMarke) 
+        public Filter(string pretraga, int? idMarke) 
         {
-            this.Naziv = naziv;
+            this.PretragaUpita = pretraga;
             this.IdMarke = idMarke;
         }
     }

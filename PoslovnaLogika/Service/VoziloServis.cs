@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PagedList;
 using PagedList.Mvc;
+using System.Linq.Expressions;
 
 namespace PoslovnaLogika.Service
 {
@@ -20,30 +21,52 @@ namespace PoslovnaLogika.Service
             List<VoziloMarka> kolekcija = (from item in _db.VoziloMarke select item).ToList();
             return kolekcija;
         }
-        public VoziloStranica DohvatiMarke(IVoziloSorter sort, IVoziloFilter filter, IVoziloStranica stranica)
+        public (List<VoziloMarka>, int) DohvatiMarke(IVoziloSorter sort, IFilter filter, IStranica stranica)
         {
-            VoziloStranica strIspis = (VoziloStranica)stranica;
+            Stranica strIspis = (Stranica)stranica;
             VoziloSorter sorter = (VoziloSorter)sort;
-            sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
-           
-            string upit = "SELECT* FROM VoziloMarkas ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
+            IEnumerable<VoziloMarka> upit = null;
+            List<VoziloMarka> listaIspisa = null;
+            //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
 
+            var parametar = Expression.Parameter(typeof(VoziloMarka), "item");      //  -- kreiranje parametra
+            var izraz = Expression.Property(parametar, sorter.Stupac);
+            var konverzija = Expression.Convert(izraz, typeof(object));
+            var lambda = Expression.Lambda<Func<VoziloMarka, object>>(konverzija, parametar);
+
+            //string upit = "SELECT * FROM VoziloMarkas" ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
             //List<VoziloMarka> kolekcija = _db.VoziloMarke.SqlQuery("SELECT* FROM VoziloMarkas " + sorter.Sort + "; ").ToList();
 
-            if (!String.IsNullOrEmpty(filter.Naziv))
+            if (!String.IsNullOrEmpty(filter.PretragaUpita))
             {
                 //kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
                 //kolekcija = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => x.GetType().ToString() == sorter.Stupac);
-                strIspis.BrSvihIspisa = (from item in _db.VoziloMarke.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Count();
-                strIspis.MarkaStrana = (from item in _db.VoziloMarke.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                upit = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
+                strIspis.BrSvihIspisa = upit.Count();
+                if (sorter.Poredak == "A")
+                {
+                    listaIspisa = upit.OrderBy(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
+                else
+                {
+                    listaIspisa = upit.OrderByDescending(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
             }
             else
             {
-                strIspis.BrSvihIspisa = (from item in _db.VoziloMarke.SqlQuery(upit) select item).Count();
-                strIspis.MarkaStrana = (from item in _db.VoziloMarke.SqlQuery(upit) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                upit = (from item in _db.VoziloMarke select item);
+                strIspis.BrSvihIspisa = upit.Count();
+                if (sorter.Poredak == "A")
+                {
+                    listaIspisa = upit.OrderBy(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
+                else
+                {
+                    listaIspisa = upit.OrderByDescending(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
             }
 
-            return strIspis;
+            return (listaIspisa, strIspis.BrSvihIspisa);
         }
         //public List<VoziloMarka> DohvatiListuMarki(int? idMarke)
         //{
@@ -86,45 +109,79 @@ namespace PoslovnaLogika.Service
             List<VoziloModel> kolekcija = (from item in _db.VoziloModeli select item).ToList();
             return kolekcija;
         }
-        public VoziloStranica DohvatiModele(IVoziloSorter sort, IVoziloFilter filter, IVoziloStranica stranica)
+        public (List<VoziloModel>, int) DohvatiModele(IVoziloSorter sort, IFilter filter, IStranica stranica)
         {
-            VoziloStranica strIspis = (VoziloStranica)stranica;
+            Stranica strIspis = (Stranica)stranica;
             VoziloSorter sorter = (VoziloSorter)sort;
-            sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
+            IEnumerable<VoziloModel> upit = null;
+            List<VoziloModel> listaIspisa = null;
 
-            string upit = "SELECT* FROM VoziloModels ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
+            var parametar = Expression.Parameter(typeof(VoziloModel), "item");
+            var izraz = Expression.Property(parametar, sorter.Stupac);
+            var konverzija = Expression.Convert(izraz, typeof(object));
+            var lambda = Expression.Lambda<Func<VoziloModel, object>>(konverzija, parametar);
 
-            if (!String.IsNullOrEmpty(filter.Naziv) || filter.IdMarke > 0 || filter.IdMarke != null)
+            if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
-                if (!String.IsNullOrEmpty(filter.Naziv) && filter.IdMarke > 0 && filter.IdMarke != null)
+                if (!String.IsNullOrEmpty(filter.PretragaUpita) && filter.IdMarke > 0 && filter.IdMarke != null)
                 {
-                    //kolekcija = _db.VoziloModeli.SqlQuery("SELECT * FROM VoziloModels WHERE Naziv LIKE '%" + filter.Naziv + "%' OR IdMarke = " + filter.IdMarke + " " + sorter.Sort + " ;").ToList();
-                    //kolekcija = (from item in kolekcija where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) || item.IdMarke == filter.IdMarke select item).ToList();
-                    strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) && item.IdMarke == filter.IdMarke select item).Count();
-                    strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) && item.IdMarke == filter.IdMarke select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                    upit = (from item in _db.VoziloModeli where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && item.IdMarke == filter.IdMarke select item);
+                    strIspis.BrSvihIspisa = upit.Count();
+                    if (sorter.Poredak == "A")
+                    {
+                        listaIspisa = upit.OrderBy(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                    }
+                    else
+                    {
+                        listaIspisa = upit.OrderByDescending(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                    }
                 }
                 else
                 { 
-                    if (!String.IsNullOrEmpty(filter.Naziv))
-                    {                        
-                        strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Count();
-                        strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                    if (!String.IsNullOrEmpty(filter.PretragaUpita))
+                    {
+                        upit = (from item in _db.VoziloModeli where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
+                        strIspis.BrSvihIspisa = upit.Count();
+                        if (sorter.Poredak == "A")
+                        {
+                            listaIspisa = upit.OrderBy(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                        }
+                        else
+                        {
+                            listaIspisa = upit.OrderByDescending(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                        }
                     }
 
                     if (filter.IdMarke > 0 && filter.IdMarke != null)
                     {
-                        strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) where item.IdMarke == filter.IdMarke select item).Count();
-                        strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) where item.IdMarke == filter.IdMarke select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                        upit = (from item in _db.VoziloModeli where item.IdMarke == filter.IdMarke select item);
+                        strIspis.BrSvihIspisa = upit.Count();
+                        if (sorter.Poredak == "A")
+                        {
+                            listaIspisa = upit.OrderBy(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                        }
+                        else
+                        {
+                            listaIspisa = upit.OrderByDescending(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                        }
                     }
                 }
             }
             else
             {
-                strIspis.BrSvihIspisa = (from item in _db.VoziloModeli.SqlQuery(upit) select item).Count();
-                strIspis.ModelStrana = (from item in _db.VoziloModeli.SqlQuery(upit) select item).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                upit = (from item in _db.VoziloModeli select item);
+                strIspis.BrSvihIspisa = upit.Count();
+                if (sorter.Poredak == "A")
+                {
+                    listaIspisa = upit.OrderBy(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
+                else
+                {
+                    listaIspisa = upit.OrderByDescending(lambda.Compile()).Skip((strIspis.Strana - 1) * strIspis.BrIspisa).Take(strIspis.BrIspisa).ToList();
+                }
             }
                      
-            return strIspis;
+            return (listaIspisa ,strIspis.BrSvihIspisa);
         }
         //// -- izgleda da je ova metoda nepotrebna uz nove promjene
         //public List<VoziloModel> DohvatiListuModela(int? idMarke)

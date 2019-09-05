@@ -5,6 +5,6 @@
         string Poredak { get; set; }
         string Stupac { get; set; }
 
-        void OdrediSortiranje(string sort);
+        //void OdrediSortiranje(string sort);
     }
 }
