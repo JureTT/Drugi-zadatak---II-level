@@ -27,13 +27,15 @@ namespace PoslovnaLogika.Service
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloMarka> upit = null;
             List<VoziloMarka> listaIspisa = null;
-            sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
+            //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
+            sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
 
-            //var parametar = Expression.Parameter(typeof(VoziloMarka), "item");      //  -- kreiranje parametra
-            //var izraz = Expression.Property(parametar, sorter.Stupac);
+            var parametar = Expression.Parameter(typeof(VoziloMarka), "item");      //  -- kreiranje parametra
+            var izraz = Expression.Property(parametar, sorter.Stupac);
             //var konverzija = Expression.Convert(izraz, typeof(object));
             //var lambda = Expression.Lambda<Func<VoziloMarka, object>>(konverzija, parametar);
-            //var lambda2 = Expression.Lambda(izraz, parametar);
+            var lambda = Expression.Lambda(izraz, parametar);
+            MethodCallExpression ispis = null;
             //PropertyInfo svojstvo = typeof(VoziloMarka).GetProperty(sorter.Stupac);
 
             //string upit = "SELECT * FROM VoziloMarkas" ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
@@ -45,8 +47,15 @@ namespace PoslovnaLogika.Service
                 //kolekcija = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => x.GetType().ToString() == sorter.Stupac);
                 upit = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
                 strIspis.BrSvihRedova = upit.Count();
-               
-                listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                ispis = Expression.Call(
+                typeof(Queryable),
+                sorter.Poredak,
+                new[] { typeof(VoziloMarka), izraz.Type },
+                upit.Expression,
+                Expression.Quote(lambda));
+
+                listaIspisa = upit.Provider.CreateQuery<VoziloMarka>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                //listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
                 //OrderBy(lambda,Compile())
                 //OrderBy(item => svojstvo.GetValue(item))
                 //OrderBy(item => item.GetType().GetProperty(property).GetValue(item))
@@ -55,7 +64,10 @@ namespace PoslovnaLogika.Service
             {
                 upit = (from item in _db.VoziloMarke select item);
                 strIspis.BrSvihRedova = upit.Count();
-                listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloMarka), izraz.Type }, upit.Expression, Expression.Quote(lambda));
+
+                listaIspisa = upit.Provider.CreateQuery<VoziloMarka>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                //listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
             }
 
             return (listaIspisa, strIspis.BrSvihRedova);
@@ -107,12 +119,12 @@ namespace PoslovnaLogika.Service
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloModel> upit = null;
             List<VoziloModel> listaIspisa = null;
-            sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
+            sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
 
-            //var parametar = Expression.Parameter(typeof(VoziloModel), "item");
-            //var izraz = Expression.Property(parametar, sorter.Stupac);
-            //var konverzija = Expression.Convert(izraz, typeof(object));
-            //var lambda = Expression.Lambda<Func<VoziloModel, object>>(konverzija, parametar);
+            var parametar = Expression.Parameter(typeof(VoziloModel), "item");
+            var izraz = Expression.Property(parametar, sorter.Stupac);
+            var lambda = Expression.Lambda(izraz, parametar);
+            MethodCallExpression ispis = null;
 
             if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
@@ -120,7 +132,8 @@ namespace PoslovnaLogika.Service
                 {
                     upit = (from item in _db.VoziloModeli where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && item.IdMarke == filter.IdMarke select item);
                     strIspis.BrSvihRedova = upit.Count();
-                    listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                    ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
+                    listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
                 }
                 else
                 { 
@@ -128,14 +141,16 @@ namespace PoslovnaLogika.Service
                     {
                         upit = (from item in _db.VoziloModeli where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
                         strIspis.BrSvihRedova = upit.Count();
-                        listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                        ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
+                        listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
                     }
 
                     if (filter.IdMarke > 0 && filter.IdMarke != null)
                     {
                         upit = (from item in _db.VoziloModeli where item.IdMarke == filter.IdMarke select item);
                         strIspis.BrSvihRedova = upit.Count();
-                        listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                        ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
+                        listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
                     }
                 }
             }
@@ -143,7 +158,8 @@ namespace PoslovnaLogika.Service
             {
                 upit = (from item in _db.VoziloModeli select item);
                 strIspis.BrSvihRedova = upit.Count();
-                listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
+                listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
             }
                      
             return (listaIspisa ,strIspis.BrSvihRedova);
