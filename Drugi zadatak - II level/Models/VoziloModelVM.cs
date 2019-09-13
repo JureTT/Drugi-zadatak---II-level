@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Drugi_zadatak___II_level.Models
 {
-    public class VoziloModelVM
+    public class VoziloModelVM : IVoziloModelVM
     {
         [Key]
         public int Id { get; set; }

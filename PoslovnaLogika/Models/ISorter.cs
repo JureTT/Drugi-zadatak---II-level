@@ -1,6 +1,6 @@
 ﻿namespace PoslovnaLogika.Models
 {
-    public interface IVoziloSorter
+    public interface ISorter
     {
         string Poredak { get; set; }
         string Stupac { get; set; }

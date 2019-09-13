@@ -6,28 +6,28 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class Stranica : IStranica
+    public class Numerer : INumerer
     {
-        public int Strana { get; set; }
-        public int BrStrana { get; set; }
-        public int BrIspisa { get; set; }
-        public int BrSvihIspisa { get; set; }
+        public int Str { get; set; }
+        public int BrStr { get; set; }
+        public int BrRedova { get; set; }
+        public int BrSvihRedova { get; set; }
 
-        public dynamic ListaIspisa { get; set; }    // -- radi, ali idemo na drugu soluciju
+        //public dynamic ListaIspisa { get; set; }    // -- radi, ali idemo na drugu soluciju
         //public List<VoziloMarka> MarkaStrana { get; set; }    //privremeno, sredi imena varijabli kasnije
         //public List<VoziloModel> ModelStrana { get; set; }    //privremeno, sredi imena varijabli kasnije
 
-        public Stranica()
+        public Numerer()
         {
-            this.BrIspisa = 10;
+            this.BrRedova = 10;
         }
-        public void UnesiStranice(int? strana)
+        public void UnesiBrStr(int? str)
         {
-            this.Strana = (int)strana;
+            this.Str = (int)str;
         }
-        public void UnesiBrIspisa(int? brIspisa)
+        public void UnesiBrRedova(int? brRedova)
         {
-            this.BrIspisa = (brIspisa == null) ? 10 : (int)brIspisa;
+            this.BrRedova = (brRedova == null) ? 10 : (int)brRedova;
         }
 
         //public void odrediBrStranica()

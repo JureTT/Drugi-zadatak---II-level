@@ -49,6 +49,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
@@ -63,13 +66,13 @@
   <ItemGroup>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\IFilter.cs" />
-    <Compile Include="Models\IVoziloSorter.cs" />
-    <Compile Include="Models\IStranica.cs" />
+    <Compile Include="Models\ISorter.cs" />
+    <Compile Include="Models\INumerer.cs" />
     <Compile Include="Models\Filter.cs" />
     <Compile Include="Models\IVoziloMarka.cs" />
     <Compile Include="Models\IVoziloModel.cs" />
-    <Compile Include="Models\Stranica.cs" />
-    <Compile Include="Models\VoziloSorter.cs" />
+    <Compile Include="Models\Numerer.cs" />
+    <Compile Include="Models\Sorter.cs" />
     <Compile Include="Models\VoziloMarka.cs" />
     <Compile Include="Models\VoziloModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

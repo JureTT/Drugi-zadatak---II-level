@@ -25,7 +25,7 @@ namespace Drugi_zadatak___II_level.Controllers
             return View("Error");        
         }
 
-        public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv)
+        public ActionResult List(int? brRedova, int? brStr, string sortiraj, string naziv)
         {           
             //IPagedList<VoziloMarkaVM> lstMarkePG = null;
             List<VoziloMarkaVM> lstMarkeVM = null;
@@ -33,25 +33,25 @@ namespace Drugi_zadatak___II_level.Controllers
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj))? "D_Id" : (sortiraj == "A_Id") ? "D_Id": "A_Id";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
-            VoziloSorter sorter = new VoziloSorter(sortiraj ?? "A_Id");
+            Sorter sorter = new Sorter(sortiraj ?? "A_Id");
             Filter filter = new Filter(naziv);            
-            Stranica stranica = new Stranica();
-            stranica.UnesiStranice(strana ?? 1);
-            stranica.UnesiBrIspisa(brIspisa);
+            Numerer stranica = new Numerer();
+            stranica.UnesiBrStr(brStr ?? 1);
+            stranica.UnesiBrRedova(brRedova);
 
             try
             {
-                if (naziv != null || sortiraj != null || strana != null)
+                if (naziv != null || sortiraj != null || brStr != null)
                 {
-                    (lstMarke, stranica.BrSvihIspisa) = Servis.DohvatiMarke(sorter, filter, stranica);
+                    (lstMarke, stranica.BrSvihRedova) = Servis.DohvatiMarke(sorter, filter, stranica);
                     //lstMarke = stranica.ListaIspisa;
                     lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
                 }
                 else
                 {
                     lstMarke = Servis.DohvatiMarke();
-                    stranica.BrSvihIspisa = lstMarke.Count();
-                    lstMarke = lstMarke.Skip((stranica.Strana - 1) * stranica.BrIspisa).Take(stranica.BrIspisa).ToList();
+                    stranica.BrSvihRedova = lstMarke.Count();
+                    lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
                     lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
                 }
                 
@@ -62,7 +62,7 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstMarkeVM );
+            return View(lstMarkeVM);
         }
 
         // GET: Marka/Details/5
@@ -88,7 +88,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Marka/Create
         [HttpPost]
-        public ActionResult Create(VoziloMarkaVM markaVM)
+        public ActionResult Create(IVoziloMarkaVM markaVM)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Marka/Edit/5
         [HttpPost]
-        public ActionResult Edit(VoziloMarkaVM markaVM)
+        public ActionResult Edit(IVoziloMarkaVM markaVM)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace Drugi_zadatak___II_level.Controllers
             return View(markaVM);
         }
         [HttpPost]
-        public ActionResult Delete(VoziloMarkaVM markaVM)
+        public ActionResult Delete(IVoziloMarkaVM markaVM)
         {
             try
             {

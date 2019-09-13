@@ -14,11 +14,11 @@
     ////VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };     // nepotrebno
     //listaVM.Insert(0, svaVozila);
 
-    Stranica stranica = ViewBag.stranica;
-    int str = stranica.Strana;
+    Numerer stranica = ViewBag.stranica;
+    int str = stranica.Str;
     int[] stranice = new int[5] {5, 10, 15, 20, 25};
-    int brSvi = stranica.BrSvihIspisa;
-    int brIsp = stranica.BrIspisa;
+    int brSvi = stranica.BrSvihRedova;
+    int brIsp = stranica.BrRedova;
     int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
     int a = 0;      // kod za listanje stranica u oba smjera
     string sort = Request.QueryString["sortiraj"];

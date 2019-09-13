@@ -33,25 +33,25 @@ namespace Drugi_zadatak___II_level.Controllers
             ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
-            VoziloSorter sorter = new VoziloSorter(sortiraj ?? "A_Id");
+            Sorter sorter = new Sorter(sortiraj ?? "A_Id");
             Filter filter = new Filter(naziv, idMarke);
-            Stranica stranica = new Stranica();
-            stranica.UnesiStranice(strana ?? 1);
-            stranica.UnesiBrIspisa(brIspisa);
+            Numerer stranica = new Numerer();
+            stranica.UnesiBrStr(strana ?? 1);
+            stranica.UnesiBrRedova(brIspisa);
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    (lstModeli, stranica.BrSvihIspisa) = Servis.DohvatiModele(sorter, filter, stranica);
+                    (lstModeli, stranica.BrSvihRedova) = Servis.DohvatiModele(sorter, filter, stranica);
                     //lstModeli = stranica.ListaIspisa;
                     lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
                 else
                 {
                     lstModeli = Servis.DohvatiModele();
-                    stranica.BrSvihIspisa = lstModeli.Count();
-                    lstModeli = lstModeli.Skip((stranica.Strana - 1) * stranica.BrIspisa).Take(stranica.BrIspisa).ToList();
+                    stranica.BrSvihRedova = lstModeli.Count();
+                    lstModeli = lstModeli.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
                     lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
                 //lstModeliPG = lstModeliVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
@@ -134,7 +134,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Model/Create
         [HttpPost]
-        public ActionResult Create(VoziloModelVM modelVM)
+        public ActionResult Create(IVoziloModelVM modelVM)
         {
             try
             {                
@@ -167,7 +167,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Model/Edit/5
         [HttpPost]
-        public ActionResult Edit(VoziloModelVM modelVM)
+        public ActionResult Edit(IVoziloModelVM modelVM)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace Drugi_zadatak___II_level.Controllers
             return View(modelVM);
         }
         [HttpPost]
-        public ActionResult Delete(VoziloModelVM modelVM)
+        public ActionResult Delete(IVoziloModelVM modelVM)
         {
             try
             {

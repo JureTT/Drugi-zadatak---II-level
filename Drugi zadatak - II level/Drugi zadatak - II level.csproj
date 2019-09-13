@@ -173,6 +173,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\IVoziloMarkaVM.cs" />
+    <Compile Include="Models\IVoziloModelVM.cs" />
     <Compile Include="Models\Mape.cs" />
     <Compile Include="Models\VoziloMarkaVM.cs" />
     <Compile Include="Models\VoziloModelVM.cs" />
