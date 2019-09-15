@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using PagedList;
+using PagedList.Mvc;
 
 namespace PoslovnaLogika.Service
 {
@@ -18,24 +20,24 @@ namespace PoslovnaLogika.Service
         #region MarkaCRUD
         public List<VoziloMarka> DohvatiMarke()
         {
-            List<VoziloMarka> kolekcija = (from item in _db.VoziloMarke select item).ToList();
+            List<VoziloMarka> kolekcija = _db.VoziloMarke.ToList();
             return kolekcija;
         }
-        public (List<VoziloMarka>, int) DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
+        public IPagedList<IVoziloMarka> DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloMarka> upit = null;
             List<VoziloMarka> listaIspisa = null;
             //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
-            sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
+            //sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
 
-            var parametar = Expression.Parameter(typeof(VoziloMarka), "item");      //  -- kreiranje parametra
-            var izraz = Expression.Property(parametar, sorter.Stupac);
+            //var parametar = Expression.Parameter(typeof(VoziloMarka), "item");      //  -- kreiranje parametra
+            //var izraz = Expression.Property(parametar, sorter.Stupac);
             //var konverzija = Expression.Convert(izraz, typeof(object));
             //var lambda = Expression.Lambda<Func<VoziloMarka, object>>(konverzija, parametar);
-            var lambda = Expression.Lambda(izraz, parametar);
-            MethodCallExpression ispis = null;
+            //var lambda = Expression.Lambda(izraz, parametar);
+            //MethodCallExpression ispis = null;
             //PropertyInfo svojstvo = typeof(VoziloMarka).GetProperty(sorter.Stupac);
 
             //string upit = "SELECT * FROM VoziloMarkas" ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
@@ -45,16 +47,24 @@ namespace PoslovnaLogika.Service
             {
                 //kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
                 //kolekcija = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => x.GetType().ToString() == sorter.Stupac);
-                upit = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
+                //upit = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
+                upit = _db.VoziloMarke.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
                 strIspis.BrSvihRedova = upit.Count();
-                ispis = Expression.Call(
-                typeof(Queryable),
-                sorter.Poredak,
-                new[] { typeof(VoziloMarka), izraz.Type },
-                upit.Expression,
-                Expression.Quote(lambda));
+                //ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloMarka), izraz.Type }, upit.Expression, Expression.Quote(lambda));
 
-                listaIspisa = upit.Provider.CreateQuery<VoziloMarka>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                switch (sorter.Stupac)
+                {
+                    case "Id":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id).ToList() : upit.OrderByDescending(x => x.Id).ToList();
+                        break;
+                    case "Naziv":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv).ToList() : upit.OrderByDescending(x => x.Naziv).ToList();
+                        break;
+                    case "Kratica":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica).ToList() : upit.OrderByDescending(x => x.Kratica).ToList();
+                        break;
+                }
+                //listaIspisa = upit.Provider.CreateQuery<VoziloMarka>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
                 //listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
                 //OrderBy(lambda,Compile())
                 //OrderBy(item => svojstvo.GetValue(item))
@@ -62,15 +72,26 @@ namespace PoslovnaLogika.Service
             }
             else
             {
-                upit = (from item in _db.VoziloMarke select item);
+                upit = _db.VoziloMarke;
                 strIspis.BrSvihRedova = upit.Count();
-                ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloMarka), izraz.Type }, upit.Expression, Expression.Quote(lambda));
 
-                listaIspisa = upit.Provider.CreateQuery<VoziloMarka>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
-                //listaIspisa = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+                switch (sorter.Stupac)
+                {
+                    case "Id":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id).ToList() : upit.OrderByDescending(x => x.Id).ToList();
+                        break;
+                    case "Naziv":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv).ToList() : upit.OrderByDescending(x => x.Naziv).ToList();
+                        break;
+                    case "Kratica":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica).ToList() : upit.OrderByDescending(x => x.Kratica).ToList();
+                        break;
+                }
             }
 
-            return (listaIspisa, strIspis.BrSvihRedova);
+            IPagedList<IVoziloMarka> lista = listaIspisa.ToPagedList<IVoziloMarka>(stranica.Str, stranica.BrRedova);
+            
+            return lista;
         }
         //public List<VoziloMarka> DohvatiListuMarki(int? idMarke)
         //{
@@ -113,56 +134,108 @@ namespace PoslovnaLogika.Service
             List<VoziloModel> kolekcija = (from item in _db.VoziloModeli select item).ToList();
             return kolekcija;
         }
-        public (List<VoziloModel>, int) DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
+        public IPagedList<IVoziloModel> DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloModel> upit = null;
             List<VoziloModel> listaIspisa = null;
-            sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
-
-            var parametar = Expression.Parameter(typeof(VoziloModel), "item");
-            var izraz = Expression.Property(parametar, sorter.Stupac);
-            var lambda = Expression.Lambda(izraz, parametar);
-            MethodCallExpression ispis = null;
-
+            
             if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
                 if (!String.IsNullOrEmpty(filter.PretragaUpita) && filter.IdMarke > 0 && filter.IdMarke != null)
                 {
-                    upit = (from item in _db.VoziloModeli where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && item.IdMarke == filter.IdMarke select item);
+                    upit = _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && x.IdMarke == filter.IdMarke);
                     strIspis.BrSvihRedova = upit.Count();
-                    ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
-                    listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+
+                    switch (sorter.Stupac)
+                    {
+                        case "Id":
+                            listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id).ToList() : upit.OrderByDescending(x => x.Id).ToList();
+                            break;
+                        case "IdMarke":
+                            listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.IdMarke).ToList() : upit.OrderByDescending(x => x.IdMarke).ToList();
+                            break;
+                        case "Naziv":
+                            listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv).ToList() : upit.OrderByDescending(x => x.Naziv).ToList();
+                            break;
+                        case "Kratica":
+                            listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica).ToList() : upit.OrderByDescending(x => x.Kratica).ToList();
+                            break;
+                    }
                 }
                 else
                 { 
                     if (!String.IsNullOrEmpty(filter.PretragaUpita))
                     {
-                        upit = (from item in _db.VoziloModeli where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
+                        upit = _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
                         strIspis.BrSvihRedova = upit.Count();
-                        ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
-                        listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+
+                        switch (sorter.Stupac)
+                        {
+                            case "Id":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id).ToList() : upit.OrderByDescending(x => x.Id).ToList();
+                                break;
+                            case "IdMarke":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.IdMarke).ToList() : upit.OrderByDescending(x => x.IdMarke).ToList();
+                                break;
+                            case "Naziv":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv).ToList() : upit.OrderByDescending(x => x.Naziv).ToList();
+                                break;
+                            case "Kratica":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica).ToList() : upit.OrderByDescending(x => x.Kratica).ToList();
+                                break;
+                        }
                     }
 
                     if (filter.IdMarke > 0 && filter.IdMarke != null)
                     {
-                        upit = (from item in _db.VoziloModeli where item.IdMarke == filter.IdMarke select item);
+                        upit = _db.VoziloModeli.Where(x => x.IdMarke == filter.IdMarke);
                         strIspis.BrSvihRedova = upit.Count();
-                        ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
-                        listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+
+                        switch (sorter.Stupac)
+                        {
+                            case "Id":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id).ToList() : upit.OrderByDescending(x => x.Id).ToList();
+                                break;
+                            case "IdMarke":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.IdMarke).ToList() : upit.OrderByDescending(x => x.IdMarke).ToList();
+                                break;
+                            case "Naziv":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv).ToList() : upit.OrderByDescending(x => x.Naziv).ToList();
+                                break;
+                            case "Kratica":
+                                listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica).ToList() : upit.OrderByDescending(x => x.Kratica).ToList();
+                                break;
+                        }
                     }
                 }
             }
             else
             {
-                upit = (from item in _db.VoziloModeli select item);
+                upit = _db.VoziloModeli;
                 strIspis.BrSvihRedova = upit.Count();
-                ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloModel), izraz.Type }, upit.Expression, Expression.Quote(lambda));
-                listaIspisa = upit.Provider.CreateQuery<VoziloModel>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
+
+                switch (sorter.Stupac)
+                {
+                    case "Id":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id).ToList() : upit.OrderByDescending(x => x.Id).ToList();
+                        break;
+                    case "IdMarke":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.IdMarke).ToList() : upit.OrderByDescending(x => x.IdMarke).ToList();
+                        break;
+                    case "Naziv":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv).ToList() : upit.OrderByDescending(x => x.Naziv).ToList();
+                        break;
+                    case "Kratica":
+                        listaIspisa = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica).ToList() : upit.OrderByDescending(x => x.Kratica).ToList();
+                        break;
+                }
             }
-                     
-            return (listaIspisa ,strIspis.BrSvihRedova);
+
+            IPagedList<IVoziloModel> lista = listaIspisa.ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
+
+            return lista;
         }
         //// -- izgleda da je ova metoda nepotrebna uz nove promjene
         //public List<VoziloModel> DohvatiListuModela(int? idMarke)

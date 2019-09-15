@@ -28,7 +28,7 @@ namespace Drugi_zadatak___II_level.Controllers
         {
             //IPagedList<VoziloModelVM> lstModeliPG = null;
             List<VoziloModelVM> lstModeliVM = null;
-            List<VoziloModel> lstModeli = null;
+            IPagedList<IVoziloModel> lstModeli = null;
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj)) ? "D_Id" : (sortiraj == "A_Id") ? "D_Id" : "A_Id";
             ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
@@ -43,15 +43,14 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    (lstModeli, stranica.BrSvihRedova) = Servis.DohvatiModele(sorter, filter, stranica);
+                    lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
                     //lstModeli = stranica.ListaIspisa;
                     lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
                 else
                 {
-                    lstModeli = Servis.DohvatiModele();
+                    lstModeli = Servis.DohvatiModele().ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
                     stranica.BrSvihRedova = lstModeli.Count();
-                    lstModeli = lstModeli.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
                     lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
                 }
                 //lstModeliPG = lstModeliVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
@@ -61,7 +60,7 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstModeliVM);
+            return View(lstModeli);
             
                 //if (idMarke > 0)
                 //{

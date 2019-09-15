@@ -3,7 +3,7 @@
 @using Drugi_zadatak___II_level.Models;
 @using PagedList;
 @using PagedList.Mvc;
-@model List<Drugi_zadatak___II_level.Models.VoziloMarkaVM>
+@model IPagedList<PoslovnaLogika.Models.IVoziloMarka>
 @{
     ViewBag.Title = "List";
 
@@ -93,7 +93,7 @@
     }
 </table>
 
-@if (brStr > 1)
+@*@if (brStr > 1)
 {   
 <ul class="pagination">
     @if (str > 1)
@@ -117,6 +117,6 @@
         <li>@Html.ActionLink("»", "List", new { sortiraj = Request.QueryString["Sortiraj"], kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], brIspisa = Request.QueryString["brIspisa"], strana = str + 1 })</li>
     }
 </ul>
-}
-<!-- Html.PagedListPager(Model, strana => Url.Action("List", new { strana, kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
-    -->
+}*@
+@Html.PagedListPager(Model, strana => Url.Action("List", new { strana , brIspisa = Request.QueryString["brIspisa"], kratica = Request.QueryString["kratica"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+ 
