@@ -26,8 +26,7 @@ namespace Drugi_zadatak___II_level.Controllers
         }        
         public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv, int? idMarke)
         {
-            //IPagedList<VoziloModelVM> lstModeliPG = null;
-            List<VoziloModelVM> lstModeliVM = null;
+            IPagedList<IVoziloModelVM> lstModeliVM = null;
             IPagedList<IVoziloModel> lstModeli = null;
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj)) ? "D_Id" : (sortiraj == "A_Id") ? "D_Id" : "A_Id";
             ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
@@ -44,23 +43,21 @@ namespace Drugi_zadatak___II_level.Controllers
                 if (naziv != null || sortiraj != null || strana != null)
                 {
                     lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
-                    //lstModeli = stranica.ListaIspisa;
-                    lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
+                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
                 }
                 else
                 {
                     lstModeli = Servis.DohvatiModele().ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
                     stranica.BrSvihRedova = lstModeli.Count();
-                    lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
-                }
-                //lstModeliPG = lstModeliVM.ToPagedList(stranica.Strana, stranica.BrIspisa);
-                ViewBag.stranica = stranica;
+                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+
+                }ViewBag.stranica = stranica;
             }
             catch (Exception ex)
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstModeli);
+            return View(lstModeliVM);
             
                 //if (idMarke > 0)
                 //{

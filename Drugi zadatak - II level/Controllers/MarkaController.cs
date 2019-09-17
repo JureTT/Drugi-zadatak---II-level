@@ -27,8 +27,8 @@ namespace Drugi_zadatak___II_level.Controllers
 
         public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv)
         {           
-            //IPagedList<VoziloMarkaVM> lstMarkePG = null;
-            List<VoziloMarkaVM> lstMarkeVM = null;
+            IPagedList<IVoziloMarkaVM> lstMarkeVM = null;
+            //List<VoziloMarkaVM> lstMarkeVM = null;
             IPagedList<IVoziloMarka> lstMarke = null;
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj))? "D_Id" : (sortiraj == "A_Id") ? "D_Id": "A_Id";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
@@ -45,14 +45,16 @@ namespace Drugi_zadatak___II_level.Controllers
                 {
                     lstMarke = Servis.DohvatiMarke(sorter, filter, stranica);
                     //lstMarke = stranica.ListaIspisa;
-                    lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
+                    //lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
+                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
+
                 }
                 else
                 {
                     lstMarke = Servis.DohvatiMarke().ToPagedList<IVoziloMarka>(stranica.Str,stranica.BrRedova);
                     stranica.BrSvihRedova = lstMarke.Count();
                     //lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
-                    lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
+                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
                 }
                 
                 //lstMarkePG = lstMarkeVM.ToPagedList(stranica.Strana, stranica.BrIspisa);                
@@ -62,7 +64,7 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstMarke);
+            return View(lstMarkeVM);
         }
 
         // GET: Marka/Details/5
