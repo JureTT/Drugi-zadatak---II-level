@@ -170,14 +170,17 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MarkaController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
+    <Compile Include="Controllers\WebController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\IVoziloMarkaVM.cs" />
     <Compile Include="Models\IVoziloModelVM.cs" />
+    <Compile Include="Models\IVoziloVM.cs" />
     <Compile Include="Models\Mape.cs" />
     <Compile Include="Models\VoziloMarkaVM.cs" />
     <Compile Include="Models\VoziloModelVM.cs" />
+    <Compile Include="Models\VoziloVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +238,7 @@
     <Content Include="Views\Model\Create.cshtml" />
     <Content Include="Views\Model\Edit.cshtml" />
     <Content Include="Views\Model\Delete.cshtml" />
+    <Content Include="Views\Web\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

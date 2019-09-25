@@ -90,7 +90,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Marka/Create
         [HttpPost]
-        public ActionResult Create(IVoziloMarkaVM markaVM)
+        public ActionResult Create(VoziloMarkaVM markaVM)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Marka/Edit/5
         [HttpPost]
-        public ActionResult Edit(IVoziloMarkaVM markaVM)
+        public ActionResult Edit(VoziloMarkaVM markaVM)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace Drugi_zadatak___II_level.Controllers
             return View(markaVM);
         }
         [HttpPost]
-        public ActionResult Delete(IVoziloMarkaVM markaVM)
+        public ActionResult Delete(VoziloMarkaVM markaVM)
         {
             try
             {

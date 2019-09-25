@@ -130,7 +130,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Model/Create
         [HttpPost]
-        public ActionResult Create(IVoziloModelVM modelVM)
+        public ActionResult Create(VoziloModelVM modelVM)
         {
             try
             {                
@@ -163,7 +163,7 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // POST: Model/Edit/5
         [HttpPost]
-        public ActionResult Edit(IVoziloModelVM modelVM)
+        public ActionResult Edit(VoziloModelVM modelVM)
         {
             try
             {
@@ -193,7 +193,7 @@ namespace Drugi_zadatak___II_level.Controllers
             return View(modelVM);
         }
         [HttpPost]
-        public ActionResult Delete(IVoziloModelVM modelVM)
+        public ActionResult Delete(VoziloModelVM modelVM)
         {
             try
             {

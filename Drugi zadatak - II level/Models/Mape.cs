@@ -15,6 +15,7 @@ namespace Drugi_zadatak___II_level.Models
             cfg.CreateMap<VoziloModel, VoziloModelVM>();
             cfg.CreateMap<VoziloMarkaVM, VoziloMarka>();
             cfg.CreateMap<VoziloModelVM, VoziloModel>();
+            cfg.CreateMap<Vozilo, VoziloVM>();
         });
         public IMapper maper => configuration.CreateMapper();
     }

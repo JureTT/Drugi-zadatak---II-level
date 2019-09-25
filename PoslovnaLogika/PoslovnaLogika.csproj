@@ -69,10 +69,12 @@
     <Compile Include="Models\ISorter.cs" />
     <Compile Include="Models\INumerer.cs" />
     <Compile Include="Models\Filter.cs" />
+    <Compile Include="Models\IVozilo.cs" />
     <Compile Include="Models\IVoziloMarka.cs" />
     <Compile Include="Models\IVoziloModel.cs" />
     <Compile Include="Models\Numerer.cs" />
     <Compile Include="Models\Sorter.cs" />
+    <Compile Include="Models\Vozilo.cs" />
     <Compile Include="Models\VoziloMarka.cs" />
     <Compile Include="Models\VoziloModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

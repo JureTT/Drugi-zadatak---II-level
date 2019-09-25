@@ -1,0 +1,116 @@
+﻿@using PoslovnaLogika.Service;
+@using PoslovnaLogika.Models;
+@using Drugi_zadatak___II_level.Models;
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<Drugi_zadatak___II_level.Models.IVoziloVM>
+
+@{
+    ViewBag.Title = "List";
+    VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
+                                                //Mape Mapa = new Mape();
+    List<VoziloMarka> lista = servis.DohvatiMarke();
+
+    Numerer stranica = ViewBag.stranica;
+    int str = stranica.Str;
+    int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
+    int brSvi = stranica.BrSvihRedova;
+    int brIsp = stranica.BrRedova;
+    int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
+    int a = 0;      // kod za listanje stranica u oba smjera
+    string sort = Request.QueryString["sortiraj"];
+    if (sort == "D_Id")
+    {
+        //str = (str == 0) ? 1 : str;
+        a = brSvi + 1 - ((str - 1) * brIsp);
+    }
+    else
+    {
+        //if (str > 0)
+        //{
+        a = (str - 1) * brIsp;
+        ////}
+    }
+}
+
+<h2>Lista</h2>
+
+<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Message">@TempData["Message"]</span>
+
+    @using (Html.BeginForm("List", "Web", FormMethod.Get))
+    {
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Veličina popisa: </label>
+        @Html.DropDownList("brIspisa",
+                stranice.Select(item => new SelectListItem { Value = item.ToString(), Text = item.ToString(), Selected = item.ToString() == (Request.QueryString["brIspisa"]??"10")}),
+
+                new
+                {
+                    onchange = "submit()"
+                })
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
+        @Html.DropDownList("idMarke",
+                lista.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
+                "--odaberi--",
+                new
+                {
+                    onchange = "submit()"
+                })
+        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modeli vozila: </label>
+        @Html.TextBox("Naziv")
+        <input type="submit" value="Traži" />
+    }
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Redni broj", "List", new { sortiraj = ViewBag.sortId, naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+        </th>
+        <th>
+            @Html.ActionLink("Naziv modela", "List", new { sortiraj = ViewBag.sortNazivModela, naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+        </th>
+        <th>
+            @Html.ActionLink("Kratica", "List", new { sortiraj = ViewBag.sortKratica, naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+        </th>
+        <th>
+            @Html.ActionLink("Naziv tvrtke", "List", new { sortiraj = ViewBag.sortNazivMarke, naziv = Request.QueryString["naziv"], idMarke = Request.QueryString["idMarke"], strana = Request.QueryString["strana"], brIspisa = Request.QueryString["brIspisa"] })
+        </th>
+        <th>
+            <a target="_blank" href="http://google.com" rel="noopener noreferrer">Pretraži na internetu</a>
+
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @if (sort == "D_Id")
+                {
+                    @(a = a - 1)
+                }
+                else
+                {
+                    @(a = a + 1)
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NazivModel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Kratica)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NazivMarka)
+            </td>
+            <td>
+                <a target="_blank" href="http://www.google.com/search?q= @item.NazivModel @item.Kratica">Google</a> |
+                <a target="_blank" href="http://www.youtube.com/results?search_query= @item.NazivModel @item.Kratica">YouTube</a> |
+                <a target="_blank" href="http://en.wikipedia.org/wiki/@item.Kratica @item.NazivModel ">Wiki</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+@Html.PagedListPager(Model, strana => Url.Action("List", new { strana, brIspisa = Request.QueryString["brIspisa"], idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
