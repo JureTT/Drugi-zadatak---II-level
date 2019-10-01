@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\IFilter.cs" />
+    <Compile Include="Models\IOdgovor.cs" />
     <Compile Include="Models\ISorter.cs" />
     <Compile Include="Models\INumerer.cs" />
     <Compile Include="Models\Filter.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Models\IVoziloMarka.cs" />
     <Compile Include="Models\IVoziloModel.cs" />
     <Compile Include="Models\Numerer.cs" />
+    <Compile Include="Models\Odgovor.cs" />
     <Compile Include="Models\Sorter.cs" />
     <Compile Include="Models\Vozilo.cs" />
     <Compile Include="Models\VoziloMarka.cs" />

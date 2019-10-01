@@ -9,9 +9,7 @@ namespace PoslovnaLogika.Models
     public class Numerer : INumerer
     {
         public int Str { get; set; }
-        public int BrStr { get; set; }
         public int BrRedova { get; set; }
-        public int BrSvihRedova { get; set; }
 
         //public dynamic ListaIspisa { get; set; }    // -- radi, ali idemo na drugu soluciju
         //public List<VoziloMarka> MarkaStrana { get; set; }    //privremeno, sredi imena varijabli kasnije

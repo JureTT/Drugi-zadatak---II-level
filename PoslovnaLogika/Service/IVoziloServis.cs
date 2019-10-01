@@ -6,9 +6,12 @@ using PagedList.Mvc;
 namespace PoslovnaLogika.Service
 {
     public interface IVoziloServis
-    {        
+    {
+        List<Vozilo> DohvatiVozila();
+        IOdgovor DohvatiVozila(ISorter sorter, IFilter filter, INumerer stranica);
+
         List<VoziloMarka> DohvatiMarke();
-        IPagedList<IVoziloMarka> DohvatiMarke(ISorter sorter, IFilter filter, INumerer stranica);
+        IOdgovor DohvatiMarke(ISorter sorter, IFilter filter, INumerer stranica);
         //Stranica DohvatiMarke(IVoziloSorter sorter, IVoziloFilter filter, IStranica stranica);
         VoziloMarka DohvatiMarku(int idMarka);
         void IzbrisiMarku(int idMarke);
@@ -16,7 +19,7 @@ namespace PoslovnaLogika.Service
         void UrediMarku(IVoziloMarka marka);
 
         List<VoziloModel> DohvatiModele();
-        IPagedList<IVoziloModel> DohvatiModele(ISorter sorter, IFilter filter, INumerer stranica);
+        IOdgovor DohvatiModele(ISorter sorter, IFilter filter, INumerer stranica);
         //Stranica DohvatiModele(IVoziloSorter sorter, IVoziloFilter filter, IStranica stranica);
         //List<VoziloModel> DohvatiListuModela(int? idMarke);
         VoziloModel DohvatiModel(int idModela);

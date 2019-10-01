@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using PagedList;
 using PagedList.Mvc;
+using System.Data.Entity;
 
 namespace PoslovnaLogika.Service
 {
@@ -33,12 +34,13 @@ namespace PoslovnaLogika.Service
                                       }).ToList();
             return lista;
         }
-        public IPagedList<IVozilo> DohvatiVozila(ISorter sort, IFilter filter, INumerer stranica)
+        public IOdgovor DohvatiVozila(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
             IQueryable<IVozilo> upit = null;
             List<IVozilo> listaIspisa = null;
+            IOdgovor povrat = new Odgovor();
 
             if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
@@ -56,7 +58,7 @@ namespace PoslovnaLogika.Service
                                 IdModel = model.Id,
                                 NazivModel = model.Naziv
                             });  
-                    strIspis.BrSvihRedova = upit.Count();
+                    povrat.Redovi = upit.Count();
 
                     switch (sorter.Stupac)
                     {
@@ -90,7 +92,7 @@ namespace PoslovnaLogika.Service
                                     IdModel = model.Id,
                                     NazivModel = model.Naziv
                                 }); 
-                        strIspis.BrSvihRedova = upit.Count();
+                        povrat.Redovi = upit.Count();
 
                         switch (sorter.Stupac)
                         {
@@ -123,7 +125,7 @@ namespace PoslovnaLogika.Service
                                     IdModel = model.Id,
                                     NazivModel = model.Naziv
                                 }); 
-                        strIspis.BrSvihRedova = upit.Count();
+                        povrat.Redovi = upit.Count();
 
                         switch (sorter.Stupac)
                         {
@@ -156,7 +158,7 @@ namespace PoslovnaLogika.Service
                             IdModel = model.Id,
                             NazivModel = model.Naziv
                         }); 
-                strIspis.BrSvihRedova = upit.Count();
+                povrat.Redovi = upit.Count();
 
                 switch (sorter.Stupac)
                 {
@@ -175,9 +177,9 @@ namespace PoslovnaLogika.Service
                 }
             }
 
-            IPagedList<IVozilo> lista = listaIspisa.ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
+            povrat.ListaVozila = listaIspisa.ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
 
-            return lista;
+            return povrat;
         }
         #endregion Vozilo
 
@@ -187,10 +189,11 @@ namespace PoslovnaLogika.Service
             List<VoziloMarka> kolekcija = _db.VoziloMarke.ToList();
             return kolekcija;
         }
-        public IPagedList<IVoziloMarka> DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
+        public IOdgovor DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
+            IOdgovor povrat = new Odgovor();
             IQueryable<VoziloMarka> upit = null;
             List<VoziloMarka> listaIspisa = null;
             //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
@@ -213,7 +216,7 @@ namespace PoslovnaLogika.Service
                 //kolekcija = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => x.GetType().ToString() == sorter.Stupac);
                 //upit = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
                 upit = _db.VoziloMarke.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
-                strIspis.BrSvihRedova = upit.Count();
+                povrat.Redovi = upit.Count();
                 //ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloMarka), izraz.Type }, upit.Expression, Expression.Quote(lambda));
 
                 switch (sorter.Stupac)
@@ -237,7 +240,7 @@ namespace PoslovnaLogika.Service
             else
             {
                 upit = _db.VoziloMarke;
-                strIspis.BrSvihRedova = upit.Count();
+                povrat.Redovi = upit.Count();
 
                 switch (sorter.Stupac)
                 {
@@ -253,9 +256,9 @@ namespace PoslovnaLogika.Service
                 }
             }
 
-            IPagedList<IVoziloMarka> lista = listaIspisa.ToPagedList<IVoziloMarka>(stranica.Str, stranica.BrRedova);
+            povrat.ListaMarke = listaIspisa.ToPagedList<IVoziloMarka>(stranica.Str, stranica.BrRedova);
             
-            return lista;
+            return povrat;
         }
         //public List<VoziloMarka> DohvatiListuMarki(int? idMarke)
         //{
@@ -270,16 +273,14 @@ namespace PoslovnaLogika.Service
         }
         
         public void KreirajMarku(IVoziloMarka marka)
-        {
-            VoziloMarka novo = (VoziloMarka)marka;
-            _db.VoziloMarke.Add(novo);
+        {            
+            _db.Entry(marka).State = EntityState.Added;
             _db.SaveChanges();
         }
 
         public void UrediMarku(IVoziloMarka marka)
-        {            
-            VoziloMarka orginal = _db.VoziloMarke.Find(marka.Id);
-            _db.Entry(orginal).CurrentValues.SetValues(marka);
+        {   
+            _db.Entry(marka).State = EntityState.Modified;
             _db.SaveChanges();
         }
 
@@ -298,19 +299,20 @@ namespace PoslovnaLogika.Service
             List<VoziloModel> kolekcija = (from item in _db.VoziloModeli select item).ToList();
             return kolekcija;
         }
-        public IPagedList<IVoziloModel> DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
+        public IOdgovor DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloModel> upit = null;
             List<VoziloModel> listaIspisa = null;
-            
+            IOdgovor povrat = new Odgovor();
+
             if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
                 if (!String.IsNullOrEmpty(filter.PretragaUpita) && filter.IdMarke > 0 && filter.IdMarke != null)
                 {
                     upit = _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && x.IdMarke == filter.IdMarke);
-                    strIspis.BrSvihRedova = upit.Count();
+                    povrat.Redovi = upit.Count();
 
                     switch (sorter.Stupac)
                     {
@@ -333,7 +335,7 @@ namespace PoslovnaLogika.Service
                     if (!String.IsNullOrEmpty(filter.PretragaUpita))
                     {
                         upit = _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
-                        strIspis.BrSvihRedova = upit.Count();
+                        povrat.Redovi = upit.Count();
 
                         switch (sorter.Stupac)
                         {
@@ -355,7 +357,7 @@ namespace PoslovnaLogika.Service
                     if (filter.IdMarke > 0 && filter.IdMarke != null)
                     {
                         upit = _db.VoziloModeli.Where(x => x.IdMarke == filter.IdMarke);
-                        strIspis.BrSvihRedova = upit.Count();
+                        povrat.Redovi = upit.Count();
 
                         switch (sorter.Stupac)
                         {
@@ -378,7 +380,7 @@ namespace PoslovnaLogika.Service
             else
             {
                 upit = _db.VoziloModeli;
-                strIspis.BrSvihRedova = upit.Count();
+                povrat.Redovi = upit.Count();
 
                 switch (sorter.Stupac)
                 {
@@ -397,9 +399,9 @@ namespace PoslovnaLogika.Service
                 }
             }
 
-            IPagedList<IVoziloModel> lista = listaIspisa.ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
+            povrat.ListaModela = listaIspisa.ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
 
-            return lista;
+            return povrat;
         }
         //// -- izgleda da je ova metoda nepotrebna uz nove promjene
         //public List<VoziloModel> DohvatiListuModela(int? idMarke)
@@ -416,16 +418,14 @@ namespace PoslovnaLogika.Service
 
         public object KreirajModel(IVoziloModel model)
         {
-            VoziloModel novo = (VoziloModel)model;
-            _db.VoziloModeli.Add(novo);
+            _db.Entry(model).State = EntityState.Added;
             _db.SaveChanges();
             return model;
         }
 
         public void UrediModel(IVoziloModel model)
         {
-            VoziloModel orginal = _db.VoziloModeli.Find(model.Id);
-            _db.Entry(orginal).CurrentValues.SetValues(model);
+            _db.Entry(model).State = EntityState.Modified;
             _db.SaveChanges();
         }
 

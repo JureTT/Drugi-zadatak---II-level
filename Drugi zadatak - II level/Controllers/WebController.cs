@@ -34,19 +34,21 @@ namespace Drugi_zadatak___II_level.Controllers
             Numerer stranica = new Numerer();
             stranica.UnesiBrStr(strana ?? 1);
             stranica.UnesiBrRedova(brIspisa);
+            IOdgovor odgovor = new Odgovor();
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    lstVozila = Servis.DohvatiVozila(sorter, filter, stranica);
-                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
+                    odgovor = Servis.DohvatiVozila(sorter, filter, stranica);
+                    //lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
                 }
                 else
                 {
                     lstVozila = Servis.DohvatiVozila().ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
-                    stranica.BrSvihRedova = lstVozila.Count();
-                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
+                    odgovor.Redovi = lstVozila.Count();
+                    //lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
+                    odgovor.ListaVozila = lstVozila;
 
                 }
                 ViewBag.stranica = stranica;
@@ -55,7 +57,7 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa vozila. Opis: " + ex.Message;
             }
-            return View(lstVozilaVM);
+            return View(odgovor);
         }
     }
 }

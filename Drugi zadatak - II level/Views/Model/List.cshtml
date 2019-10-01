@@ -3,21 +3,23 @@
 @using Drugi_zadatak___II_level.Models;
 @using PagedList;
 @using PagedList.Mvc;
-@model IPagedList<Drugi_zadatak___II_level.Models.IVoziloModelVM>
+@model PoslovnaLogika.Models.IOdgovor
 
 @{
     ViewBag.Title = "List";
     VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
     //Mape Mapa = new Mape();
-    List<VoziloMarka> lista = servis.DohvatiMarke();
+    List<VoziloMarka> listaMarki = servis.DohvatiMarke();
     //List<VoziloMarkaVM> listaVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lista);
     ////VoziloMarkaVM svaVozila = new VoziloMarkaVM { Id = 0, Kratica = "Sve" };     // nepotrebno
     //listaVM.Insert(0, svaVozila);
 
     Numerer stranica = ViewBag.stranica;
+
     int str = stranica.Str;
+    IPagedList<IVoziloModel> lista = Model.ListaModela;
     int[] stranice = new int[5] {5, 10, 15, 20, 25};
-    int brSvi = stranica.BrSvihRedova;
+    int brSvi = Model.Redovi;
     int brIsp = stranica.BrRedova;
     int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
     int a = 0;      // kod za listanje stranica u oba smjera
@@ -53,7 +55,7 @@
                     })
         <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
             @Html.DropDownList("idMarke",
-                    lista.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
+                    listaMarki.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
                     "--odaberi--",
                     new
                     {
@@ -81,7 +83,7 @@
         </th>
         <th></th>
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in lista)
     {
         <tr>
             <th>
@@ -137,4 +139,4 @@
         }
     </ul>
 }*@
-@Html.PagedListPager(Model, strana => Url.Action("List",  new { strana, brIspisa = Request.QueryString["brIspisa"], idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+@Html.PagedListPager(lista, strana => Url.Action("List",  new { strana, brIspisa = Request.QueryString["brIspisa"], idMarke = Request.QueryString["idMarke"], naziv = Request.QueryString["naziv"], sortiraj = Request.QueryString["sortiraj"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

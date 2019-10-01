@@ -6,8 +6,6 @@ namespace PoslovnaLogika.Models
     {
         int Str { get; set; }
         int BrRedova { get; set; }
-        int BrStr { get; set; }
-        int BrSvihRedova { get; set; }
 
         //dynamic ListaIspisa { get; set; }
         //List<VoziloMarka> MarkaStrana { get; set; }

@@ -37,19 +37,21 @@ namespace Drugi_zadatak___II_level.Controllers
             Numerer stranica = new Numerer();
             stranica.UnesiBrStr(strana ?? 1);
             stranica.UnesiBrRedova(brIspisa);
+            IOdgovor odgovor = new Odgovor();
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
-                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+                    odgovor = Servis.DohvatiModele(sorter, filter, stranica);
+                    //lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
                 }
                 else
                 {
                     lstModeli = Servis.DohvatiModele().ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
-                    stranica.BrSvihRedova = lstModeli.Count();
-                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+                    odgovor.Redovi = lstModeli.Count();
+                    //lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+                    odgovor.ListaModela = lstModeli;
 
                 }ViewBag.stranica = stranica;
             }
@@ -57,7 +59,7 @@ namespace Drugi_zadatak___II_level.Controllers
             {
                 ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
             }
-            return View(lstModeliVM);
+            return View(odgovor);
             
                 //if (idMarke > 0)
                 //{
