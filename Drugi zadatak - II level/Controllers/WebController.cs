@@ -41,14 +41,15 @@ namespace Drugi_zadatak___II_level.Controllers
                 if (naziv != null || sortiraj != null || strana != null)
                 {
                     odgovor = Servis.DohvatiVozila(sorter, filter, stranica);
-                    //lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
+                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<object>, IEnumerable<IVoziloVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
+                    odgovor.ListaIspisa = lstVozilaVM;
                 }
                 else
                 {
                     lstVozila = Servis.DohvatiVozila().ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
                     odgovor.Redovi = lstVozila.Count();
-                    //lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
-                    odgovor.ListaIspisa = lstVozila;
+                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
+                    odgovor.ListaIspisa = lstVozilaVM;
 
                 }
                 ViewBag.stranica = stranica;

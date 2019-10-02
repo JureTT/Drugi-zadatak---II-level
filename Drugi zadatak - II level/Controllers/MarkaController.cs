@@ -47,15 +47,16 @@ namespace Drugi_zadatak___II_level.Controllers
                     odgovor = Servis.DohvatiMarke(sorter, filter, stranica);
                     //lstMarke = stranica.ListaIspisa;
                     //lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
-                    //odgovor.ListaMarke = lstMarke; // new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<IVoziloMarkaVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
-
+                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<object>, IEnumerable<IVoziloMarkaVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
+                    odgovor.ListaIspisa = lstMarkeVM;
                 }
                 else
                 {
                     lstMarke = Servis.DohvatiMarke().ToPagedList<IVoziloMarka>(stranica.Str,stranica.BrRedova);
                     odgovor.Redovi = lstMarke.Count();
                     //lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
-                    odgovor.ListaIspisa = lstMarke;// new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
+                    lstMarkeVM =  new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
+                    odgovor.ListaIspisa = lstMarkeVM;
                 }
                 
                 //lstMarkePG = lstMarkeVM.ToPagedList(stranica.Strana, stranica.BrIspisa);                

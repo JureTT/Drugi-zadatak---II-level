@@ -44,14 +44,15 @@ namespace Drugi_zadatak___II_level.Controllers
                 if (naziv != null || sortiraj != null || strana != null)
                 {
                     odgovor = Servis.DohvatiModele(sorter, filter, stranica);
-                    //lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<object>, IEnumerable<IVoziloModelVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
+                    odgovor.ListaIspisa = lstModeliVM;
                 }
                 else
                 {
                     lstModeli = Servis.DohvatiModele().ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
                     odgovor.Redovi = lstModeli.Count();
-                    //lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
-                    odgovor.ListaIspisa = lstModeli;
+                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+                    odgovor.ListaIspisa = lstModeliVM;
 
                 }ViewBag.stranica = stranica;
             }
