@@ -51,7 +51,7 @@ namespace Drugi_zadatak___II_level.Controllers
                     lstModeli = Servis.DohvatiModele().ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
                     odgovor.Redovi = lstModeli.Count();
                     //lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
-                    odgovor.ListaModela = lstModeli;
+                    odgovor.ListaIspisa = lstModeli;
 
                 }ViewBag.stranica = stranica;
             }

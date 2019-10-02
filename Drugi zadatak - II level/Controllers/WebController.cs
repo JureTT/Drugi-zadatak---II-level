@@ -48,7 +48,7 @@ namespace Drugi_zadatak___II_level.Controllers
                     lstVozila = Servis.DohvatiVozila().ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
                     odgovor.Redovi = lstVozila.Count();
                     //lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
-                    odgovor.ListaVozila = lstVozila;
+                    odgovor.ListaIspisa = lstVozila;
 
                 }
                 ViewBag.stranica = stranica;

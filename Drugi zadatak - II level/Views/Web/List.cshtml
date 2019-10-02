@@ -12,7 +12,7 @@
     List<VoziloMarka> listaMarki = servis.DohvatiMarke();
     
     Numerer stranica = ViewBag.stranica;
-    IPagedList<IVozilo> lista = Model.ListaVozila;
+    IPagedList<IVozilo> lista = (IPagedList<IVozilo>)Model.ListaIspisa;
     int str = stranica.Str;
     int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
     int brSvi = Model.Redovi;

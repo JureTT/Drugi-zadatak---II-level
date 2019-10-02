@@ -17,7 +17,7 @@
     Numerer stranica = ViewBag.stranica;
 
     int str = stranica.Str;
-    IPagedList<IVoziloModel> lista = Model.ListaModela;
+    IPagedList<IVoziloModel> lista = (IPagedList<IVoziloModel>)Model.ListaIspisa;
     int[] stranice = new int[5] {5, 10, 15, 20, 25};
     int brSvi = Model.Redovi;
     int brIsp = stranica.BrRedova;

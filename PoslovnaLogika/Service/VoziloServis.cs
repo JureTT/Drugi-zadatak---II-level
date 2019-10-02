@@ -177,7 +177,7 @@ namespace PoslovnaLogika.Service
                 }
             }
 
-            povrat.ListaVozila = listaIspisa.ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
+            povrat.ListaIspisa = listaIspisa.ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
 
             return povrat;
         }
@@ -256,7 +256,7 @@ namespace PoslovnaLogika.Service
                 }
             }
 
-            povrat.ListaMarke = listaIspisa.ToPagedList<IVoziloMarka>(stranica.Str, stranica.BrRedova);
+            povrat.ListaIspisa = listaIspisa.ToPagedList<IVoziloMarka>(stranica.Str, stranica.BrRedova);
             
             return povrat;
         }
@@ -399,7 +399,7 @@ namespace PoslovnaLogika.Service
                 }
             }
 
-            povrat.ListaModela = listaIspisa.ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
+            povrat.ListaIspisa = listaIspisa.ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
 
             return povrat;
         }

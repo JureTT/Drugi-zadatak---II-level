@@ -8,7 +8,7 @@
     ViewBag.Title = "List";
 
     Numerer stranica = ViewBag.stranica;
-    IPagedList<IVoziloMarka> lista = Model.ListaMarke;
+    IPagedList<IVoziloMarka> lista = (IPagedList<IVoziloMarka>)Model.ListaIspisa;
     int str = stranica.Str;
     int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
     int brSvi = Model.Redovi;
