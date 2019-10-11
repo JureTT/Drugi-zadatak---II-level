@@ -25,7 +25,8 @@ namespace PoslovnaLogika.Models
         }
         public void UnesiBrRedova(int? brRedova)
         {
-            this.BrRedova = (brRedova == null) ? 10 : (int)brRedova;
+            this.BrRedova = (brRedova.HasValue) ? brRedova.Value : 10;
+            //this.BrRedova = (brRedova == null) ? 10 : (int)brRedova;
         }
 
         //public void odrediBrStranica()

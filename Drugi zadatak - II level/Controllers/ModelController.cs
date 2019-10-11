@@ -37,14 +37,15 @@ namespace Drugi_zadatak___II_level.Controllers
             Numerer stranica = new Numerer();
             stranica.UnesiBrStr(strana ?? 1);
             stranica.UnesiBrRedova(brIspisa);
-            IOdgovor odgovor = new Odgovor();
+            IOdgovor<IVoziloModel> odgovoric = new Odgovor<IVoziloModel>();
+            IOdgovor<IVoziloModelVM> odgovor = new Odgovor<IVoziloModelVM>();
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    odgovor = Servis.DohvatiModele(sorter, filter, stranica);
-                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<object>, IEnumerable<IVoziloModelVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
+                    odgovoric = Servis.DohvatiModele(sorter, filter, stranica);
+                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(odgovoric.ListaIspisa), odgovoric.ListaIspisa.GetMetaData());
                     odgovor.ListaIspisa = lstModeliVM;
                 }
                 else

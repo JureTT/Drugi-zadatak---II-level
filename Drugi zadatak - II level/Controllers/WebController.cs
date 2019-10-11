@@ -34,14 +34,15 @@ namespace Drugi_zadatak___II_level.Controllers
             Numerer stranica = new Numerer();
             stranica.UnesiBrStr(strana ?? 1);
             stranica.UnesiBrRedova(brIspisa);
-            IOdgovor odgovor = new Odgovor();
+            IOdgovor<IVozilo> odgovoric = new Odgovor<IVozilo>();
+            IOdgovor<IVoziloVM> odgovor = new Odgovor<IVoziloVM>();
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    odgovor = Servis.DohvatiVozila(sorter, filter, stranica);
-                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<object>, IEnumerable<IVoziloVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
+                    odgovoric = Servis.DohvatiVozila(sorter, filter, stranica);
+                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(odgovoric.ListaIspisa), odgovoric.ListaIspisa.GetMetaData());
                     odgovor.ListaIspisa = lstVozilaVM;
                 }
                 else

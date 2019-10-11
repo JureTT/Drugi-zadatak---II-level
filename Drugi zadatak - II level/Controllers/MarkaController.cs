@@ -38,16 +38,17 @@ namespace Drugi_zadatak___II_level.Controllers
             Numerer stranica = new Numerer();
             stranica.UnesiBrStr(strana ?? 1);
             stranica.UnesiBrRedova(brIspisa);
-            IOdgovor odgovor = new Odgovor();
+            IOdgovor<IVoziloMarka> odgovoric = new Odgovor<IVoziloMarka>();
+            IOdgovor<IVoziloMarkaVM> odgovor = new Odgovor<IVoziloMarkaVM>();
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    odgovor = Servis.DohvatiMarke(sorter, filter, stranica);
+                    odgovoric = Servis.DohvatiMarke(sorter, filter, stranica);
                     //lstMarke = stranica.ListaIspisa;
                     //lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
-                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<object>, IEnumerable<IVoziloMarkaVM>>(odgovor.ListaIspisa), odgovor.ListaIspisa.GetMetaData());
+                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<IVoziloMarkaVM>>(odgovoric.ListaIspisa), odgovoric.ListaIspisa.GetMetaData());
                     odgovor.ListaIspisa = lstMarkeVM;
                 }
                 else

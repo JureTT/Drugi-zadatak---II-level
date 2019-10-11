@@ -34,13 +34,13 @@ namespace PoslovnaLogika.Service
                                       }).ToList();
             return lista;
         }
-        public IOdgovor DohvatiVozila(ISorter sort, IFilter filter, INumerer stranica)
+        public IOdgovor<IVozilo> DohvatiVozila(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
             IQueryable<IVozilo> upit = null;
             List<IVozilo> listaIspisa = null;
-            IOdgovor povrat = new Odgovor();
+            IOdgovor<IVozilo> povrat = new Odgovor<IVozilo>();
 
             if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {
@@ -189,11 +189,11 @@ namespace PoslovnaLogika.Service
             List<VoziloMarka> kolekcija = _db.VoziloMarke.ToList();
             return kolekcija;
         }
-        public IOdgovor DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
+        public IOdgovor<IVoziloMarka> DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
-            IOdgovor povrat = new Odgovor();
+            IOdgovor<IVoziloMarka> povrat = new Odgovor<IVoziloMarka>();
             IQueryable<VoziloMarka> upit = null;
             List<VoziloMarka> listaIspisa = null;
             //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
@@ -299,13 +299,13 @@ namespace PoslovnaLogika.Service
             List<VoziloModel> kolekcija = (from item in _db.VoziloModeli select item).ToList();
             return kolekcija;
         }
-        public IOdgovor DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
+        public IOdgovor<IVoziloModel> DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
         {
             Numerer strIspis = (Numerer)stranica;
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloModel> upit = null;
             List<VoziloModel> listaIspisa = null;
-            IOdgovor povrat = new Odgovor();
+            IOdgovor<IVoziloModel> povrat = new Odgovor<IVoziloModel>();
 
             if (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 || filter.IdMarke != null)
             {

@@ -3,9 +3,9 @@ using PagedList.Mvc;
 
 namespace PoslovnaLogika.Models
 {
-    public interface IOdgovor
+    public interface IOdgovor<T>
     {
-        IPagedList<object> ListaIspisa { get; set; }
+        IPagedList<T> ListaIspisa { get; set; }
         //IPagedList<IVoziloMarka> ListaMarke { get; set; }
         //IPagedList<IVoziloModel> ListaModela { get; set; }
         //IPagedList<IVozilo> ListaVozila { get; set; }
