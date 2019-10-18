@@ -9,13 +9,15 @@
     ViewBag.Title = "List";
     VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
                                                 //Mape Mapa = new Mape();
-    List<VoziloMarka> listaMarki = servis.DohvatiMarke();
-    
+    IList<IVoziloMarka> listaMarki = servis.DohvatiMarke();
+    //   probati izbaciti ovaj extra query
+    //var listaKratica = Model.ListaIspisa.AsQueryable().Select(x => new { Id = x.IdMarka, Kratica = x.Kratica }).Distinct().ToList();
+
     Numerer stranica = ViewBag.stranica;
     IPagedList<IVoziloVM> lista = (IPagedList<IVoziloVM>)Model.ListaIspisa;
     int str = stranica.Str;
     int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
-    int brSvi = Model.Redovi;
+    int brSvi = Model.UkupanBroj;
     int brIsp = stranica.BrRedova;
     int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
     int a = 0;      // kod za listanje stranica u oba smjera

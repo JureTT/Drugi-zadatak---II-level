@@ -1,4 +1,4 @@
-﻿@model Drugi_zadatak___II_level.Models.VoziloMarkaVM
+﻿@model Drugi_zadatak___II_level.Models.IVoziloMarkaVM
 
 @{
     ViewBag.Title = "Delete";
@@ -12,40 +12,43 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Id)
-            </dt>
+    <dl class="dl-horizontal">
 
-            <dd>
-                @Html.DisplayFor(model => model.Id)
-            </dd>
+        @Html.HiddenFor(model => model.Id)
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Naziv)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Naziv)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Kratica)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Naziv)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Kratica)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Naziv)
+        </dd>
 
-            <dt>
-                <br />
-                <input type="submit" value="Obriši" class="btn btn-default" />
-            </dt>
-            <dd>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Message">@TempData["Message"]</span>
-            </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Kratica)
+        </dt>
 
-        </dl>
+        <dd>
+            @Html.DisplayFor(model => model.Kratica)
+        </dd>
+
+        <dt>
+            <br />
+            <input type="submit" value="Obriši" class="btn btn-default" />
+        </dt>
+        <dd>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Message">@TempData["Message"]</span>
+        </dd>
+
+    </dl>
 
         <div class="form-actions no-color">
             @Html.ActionLink("Lista", "List")

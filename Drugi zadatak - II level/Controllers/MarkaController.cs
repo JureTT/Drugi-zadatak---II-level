@@ -16,8 +16,8 @@ namespace Drugi_zadatak___II_level.Controllers
     {        
         VoziloServis Servis = new VoziloServis();
         Mape Mapa = new Mape();
-        VoziloMarka marka = null;
-        VoziloMarkaVM markaVM = null;
+        IVoziloMarka marka = null;
+        IVoziloMarkaVM markaVM = null;
 
         // GET: Marka
         public ActionResult Index()
@@ -36,25 +36,26 @@ namespace Drugi_zadatak___II_level.Controllers
             Sorter sorter = new Sorter(sortiraj ?? "A_Id");
             Filter filter = new Filter(naziv);            
             Numerer stranica = new Numerer();
-            stranica.UnesiBrStr(strana ?? 1);
-            stranica.UnesiBrRedova(brIspisa);
-            IOdgovor<IVoziloMarka> odgovoric = new Odgovor<IVoziloMarka>();
+            stranica.Str = strana ?? 1;
+            stranica.BrRedova = brIspisa ?? 10;
+            //IOdgovor<IVoziloMarka> odgovoric = new Odgovor<IVoziloMarka>();
             IOdgovor<IVoziloMarkaVM> odgovor = new Odgovor<IVoziloMarkaVM>();
 
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    odgovoric = Servis.DohvatiMarke(sorter, filter, stranica);
+                    lstMarke = Servis.DohvatiMarke(sorter, filter, stranica);
+                    odgovor.UkupanBroj = lstMarke.TotalItemCount;
                     //lstMarke = stranica.ListaIspisa;
                     //lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
-                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<IVoziloMarkaVM>>(odgovoric.ListaIspisa), odgovoric.ListaIspisa.GetMetaData());
+                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
                     odgovor.ListaIspisa = lstMarkeVM;
                 }
                 else
                 {
                     lstMarke = Servis.DohvatiMarke().ToPagedList<IVoziloMarka>(stranica.Str,stranica.BrRedova);
-                    odgovor.Redovi = lstMarke.Count();
+                    odgovor.UkupanBroj = lstMarke.Count();
                     //lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
                     lstMarkeVM =  new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
                     odgovor.ListaIspisa = lstMarkeVM;

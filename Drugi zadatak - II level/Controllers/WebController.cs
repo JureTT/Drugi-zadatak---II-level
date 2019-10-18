@@ -32,23 +32,26 @@ namespace Drugi_zadatak___II_level.Controllers
             Sorter sorter = new Sorter(sortiraj ?? "A_Id");
             Filter filter = new Filter(naziv, idMarke);
             Numerer stranica = new Numerer();
-            stranica.UnesiBrStr(strana ?? 1);
-            stranica.UnesiBrRedova(brIspisa);
-            IOdgovor<IVozilo> odgovoric = new Odgovor<IVozilo>();
+            stranica.Str = strana ?? 1;
+            stranica.BrRedova = brIspisa ?? 10;
             IOdgovor<IVoziloVM> odgovor = new Odgovor<IVoziloVM>();
-
+            IList<IVoziloModel> lstVozilaModel = null;
+            
             try
             {
                 if (naziv != null || sortiraj != null || strana != null)
                 {
-                    odgovoric = Servis.DohvatiVozila(sorter, filter, stranica);
-                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(odgovoric.ListaIspisa), odgovoric.ListaIspisa.GetMetaData());
+                    lstVozilaModel = Servis.DohvatiVozila(sorter, filter, stranica);
+                    lstVozila = Mapa.maper.Map<IList<IVoziloModel>, IList<IVozilo>>(lstVozilaModel).ToPagedList(stranica.Str, stranica.BrRedova); 
+                    odgovor.UkupanBroj = lstVozila.TotalItemCount;
+                    lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
                     odgovor.ListaIspisa = lstVozilaVM;
                 }
                 else
                 {
-                    lstVozila = Servis.DohvatiVozila().ToPagedList<IVozilo>(stranica.Str, stranica.BrRedova);
-                    odgovor.Redovi = lstVozila.Count();
+                    lstVozilaModel = Servis.DohvatiVozila();
+                    lstVozila = Mapa.maper.Map<IList<IVoziloModel>, IList<IVozilo>>(lstVozilaModel).ToPagedList(stranica.Str, stranica.BrRedova);
+                    odgovor.UkupanBroj = lstVozila.Count();
                     lstVozilaVM = new StaticPagedList<IVoziloVM>(Mapa.maper.Map<IEnumerable<IVozilo>, IEnumerable<IVoziloVM>>(lstVozila), lstVozila.GetMetaData());
                     odgovor.ListaIspisa = lstVozilaVM;
 

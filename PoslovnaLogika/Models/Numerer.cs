@@ -19,15 +19,15 @@ namespace PoslovnaLogika.Models
         {
             this.BrRedova = 10;
         }
-        public void UnesiBrStr(int? str)
-        {
-            this.Str = (int)str;
-        }
-        public void UnesiBrRedova(int? brRedova)
-        {
-            this.BrRedova = (brRedova.HasValue) ? brRedova.Value : 10;
-            //this.BrRedova = (brRedova == null) ? 10 : (int)brRedova;
-        }
+        //public void UnesiBrStr(int? str)
+        //{
+        //    this.Str = (int)str;
+        //}
+        //public void UnesiBrRedova(int? brRedova)
+        //{
+        //    this.BrRedova = (brRedova.HasValue) ? brRedova.Value : 10;
+        //    //this.BrRedova = (brRedova == null) ? 10 : (int)brRedova;
+        //}
 
         //public void odrediBrStranica()
         //{

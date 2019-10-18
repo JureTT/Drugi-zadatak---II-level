@@ -11,7 +11,7 @@
     IPagedList<IVoziloMarkaVM> lista = (IPagedList<IVoziloMarkaVM>)Model.ListaIspisa;
     int str = stranica.Str;
     int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
-    int brSvi = Model.Redovi;
+    int brSvi = Model.UkupanBroj;
     int brIsp = stranica.BrRedova;
     int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
     int a = 0;      // kod za listanje stranica u oba smjera
