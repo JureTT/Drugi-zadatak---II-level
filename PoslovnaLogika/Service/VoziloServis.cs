@@ -21,7 +21,7 @@ namespace PoslovnaLogika.Service
         #region Vozilo
         public IList<IVoziloModel> DohvatiVozila()
         {
-            var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
+            //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
             IList<IVoziloModel> kolekcija = _db.VoziloModeli.Include(x => x.VoziloMarka).ToList<IVoziloModel>();
             //List<VoziloMarka> list = _db.VoziloMarke.ToList();
             //foreach (VoziloModel item in lista)
@@ -37,7 +37,7 @@ namespace PoslovnaLogika.Service
             Sorter sorter = (Sorter)sort;
             IQueryable<VoziloModel> upit = null;
             IList<IVoziloModel> kolekcija = null;
-            var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
+            //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
                         
             upit = (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0)
                 ?
@@ -223,7 +223,9 @@ namespace PoslovnaLogika.Service
         public void KreirajModel(IVoziloModel model)
         {
             _db.Entry(model).State = EntityState.Added;
+            //_db.Entry(model).Property("VoziloMarka_Id").CurrentValue = model.IdMarke;
             _db.SaveChanges();
+            var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke WHERE Id = " + model.Id + " ;");
         }
 
         public void UrediModel(IVoziloModel model)
