@@ -31,11 +31,9 @@ namespace PoslovnaLogika.Service
             //}
             return kolekcija;
         }
-        public IList<IVoziloModel> DohvatiVozila(ISorter sort, IFilter filter, INumerer stranica)
+        public IList<IVoziloModel> DohvatiVozila(ISorter sorter, IFilter filter, INumerer stranica)
         {
-            Numerer strIspis = (Numerer)stranica;
-            Sorter sorter = (Sorter)sort;
-            IQueryable<VoziloModel> upit = null;
+            IQueryable<IVoziloModel> upit = null;
             IList<IVoziloModel> kolekcija = null;
             //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
                         
@@ -66,7 +64,7 @@ namespace PoslovnaLogika.Service
                         break;
                 }
 
-            kolekcija = upit.ToList<IVoziloModel>();
+            kolekcija = upit.ToList();
 
             return kolekcija;
         }
@@ -78,11 +76,11 @@ namespace PoslovnaLogika.Service
             IList<IVoziloMarka> kolekcija = _db.VoziloMarke.ToList<IVoziloMarka>();
             return kolekcija;
         }
-        public IPagedList<IVoziloMarka> DohvatiMarke(ISorter sort, IFilter filter, INumerer stranica)
+        public IPagedList<IVoziloMarka> DohvatiMarke(ISorter sorter, IFilter filter, INumerer stranica)
         {
-            Numerer strIspis = (Numerer)stranica;
-            Sorter sorter = (Sorter)sort;
-            IQueryable<VoziloMarka> upit = null;
+            //Numerer strIspis = (Numerer)stranica;
+            //Sorter sorter = (Sorter)sort;
+            IQueryable<IVoziloMarka> upit = null;
             IPagedList<IVoziloMarka> kolekcija = null;
             //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
             //sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
@@ -125,7 +123,7 @@ namespace PoslovnaLogika.Service
                 //OrderBy(item => svojstvo.GetValue(item))
                 //OrderBy(item => item.GetType().GetProperty(property).GetValue(item))
            
-            kolekcija = upit.ToPagedList<IVoziloMarka>(stranica.Str, stranica.BrRedova);
+            kolekcija = upit.ToPagedList(stranica.Str, stranica.BrRedova);
             
             return kolekcija;
         }
@@ -155,8 +153,8 @@ namespace PoslovnaLogika.Service
 
         public void IzbrisiMarku(int idMarke)
         {
-            VoziloMarka marka = _db.VoziloMarke.Find(idMarke);
-            _db.VoziloMarke.Remove(marka);
+            IVoziloMarka marka = _db.VoziloMarke.Find(idMarke);
+            _db.VoziloMarke.Remove((VoziloMarka)marka);
             _db.SaveChanges();
         }
 
@@ -168,11 +166,9 @@ namespace PoslovnaLogika.Service
             IList<IVoziloModel> kolekcija = _db.VoziloModeli.ToList<IVoziloModel>();
             return kolekcija;
         }
-        public IPagedList<IVoziloModel> DohvatiModele(ISorter sort, IFilter filter, INumerer stranica)
+        public IPagedList<IVoziloModel> DohvatiModele(ISorter sorter, IFilter filter, INumerer stranica)
         {
-            Numerer strIspis = (Numerer)stranica;
-            Sorter sorter = (Sorter)sort;
-            IQueryable<VoziloModel> upit = null;
+            IQueryable<IVoziloModel> upit = null;
             IPagedList<IVoziloModel> kolekcija = null;
 
             //NAPOMENA: CIJELI VELIKI UVJET SVEDEN NA SLJEDEĆE LINIJE KODA
@@ -203,7 +199,7 @@ namespace PoslovnaLogika.Service
                     break;
             }
 
-            kolekcija = upit.ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
+            kolekcija = upit.ToPagedList(stranica.Str, stranica.BrRedova);
 
             return kolekcija;
         }
@@ -223,9 +219,10 @@ namespace PoslovnaLogika.Service
         public void KreirajModel(IVoziloModel model)
         {
             _db.Entry(model).State = EntityState.Added;
-            //_db.Entry(model).Property("VoziloMarka_Id").CurrentValue = model.IdMarke;
             _db.SaveChanges();
-            var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke WHERE Id = " + model.Id + " ;");
+            //NEMA VIŠE SHADOW PROPERTY-A
+            //_db.Entry(model).Property("VoziloMarka_Id").CurrentValue = model.IdMarke;
+            //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke WHERE Id = " + model.Id + " ;");
         }
 
         public void UrediModel(IVoziloModel model)
@@ -236,8 +233,8 @@ namespace PoslovnaLogika.Service
 
         public void IzbrisiModel(int idModela)
         {
-            VoziloModel model = _db.VoziloModeli.Find(idModela);
-            _db.VoziloModeli.Remove(model);
+            IVoziloModel model = _db.VoziloModeli.Find(idModela);
+            _db.VoziloModeli.Remove((VoziloModel)model);
             _db.SaveChanges();
         }
         #endregion

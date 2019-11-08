@@ -1,14 +1,14 @@
 ﻿@using PoslovnaLogika.Service;
 @using PoslovnaLogika.Models;
 @using Drugi_zadatak___II_level.Models;
-@model Drugi_zadatak___II_level.Models.IVoziloModelVM
+@model Drugi_zadatak___II_level.Models.VoziloModelVM
 
 @{
     ViewBag.Title = "Create";
-    VoziloServis servis = new VoziloServis();
+    IVoziloServis servis = new VoziloServis();
     Mape Mapa = new Mape();
     IList<IVoziloMarka> lista = servis.DohvatiMarke();
-    IList<IVoziloMarkaVM> listaVM = Mapa.maper.Map<IList<IVoziloMarkaVM>>(lista);
+    IList<VoziloMarkaVM> listaVM = Mapa.maper.Map<IList<VoziloMarkaVM>>(lista);
 }
 
 <h2>Kreiraj</h2>
@@ -57,7 +57,7 @@
         <div class="form-group">
             @Html.HiddenFor(model => model.IdMarke)
             @Html.HiddenFor(model => model.Kratica)
-            
+
             @Html.ValidationMessageFor(model => model.Kratica, "", new { @class = "text-danger" })
         </div>
 

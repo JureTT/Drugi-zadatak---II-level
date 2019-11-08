@@ -14,10 +14,10 @@ namespace Drugi_zadatak___II_level.Controllers
 {
     public class MarkaController : Controller
     {        
-        VoziloServis Servis = new VoziloServis();
+        IVoziloServis Servis = new VoziloServis();
         Mape Mapa = new Mape();
         IVoziloMarka marka = null;
-        IVoziloMarkaVM markaVM = null;
+        VoziloMarkaVM markaVM = null;
 
         // GET: Marka
         public ActionResult Index()
@@ -27,39 +27,39 @@ namespace Drugi_zadatak___II_level.Controllers
 
         public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv)
         {           
-            IPagedList<IVoziloMarkaVM> lstMarkeVM = null;
+            IPagedList<VoziloMarkaVM> lstMarkeVM = null;
             //List<VoziloMarkaVM> lstMarkeVM = null;
             IPagedList<IVoziloMarka> lstMarke = null;
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj))? "D_Id" : (sortiraj == "A_Id") ? "D_Id": "A_Id";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
-            Sorter sorter = new Sorter(sortiraj ?? "A_Id");
-            Filter filter = new Filter(naziv);            
-            Numerer stranica = new Numerer();
+            ISorter sorter = new Sorter(sortiraj ?? "A_Id");
+            IFilter filter = new Filter(naziv);            
+            INumerer stranica = new Numerer();
             stranica.Str = strana ?? 1;
             stranica.BrRedova = brIspisa ?? 10;
             //IOdgovor<IVoziloMarka> odgovoric = new Odgovor<IVoziloMarka>();
-            IOdgovor<IVoziloMarkaVM> odgovor = new Odgovor<IVoziloMarkaVM>();
+            IOdgovor<VoziloMarkaVM> odgovor = new Odgovor<VoziloMarkaVM>();
 
             try
             {
-                if (naziv != null || sortiraj != null || strana != null)
-                {
+                //if (naziv != null || sortiraj != null || strana != null)
+                //{
                     lstMarke = Servis.DohvatiMarke(sorter, filter, stranica);
                     odgovor.UkupanBroj = lstMarke.TotalItemCount;
                     //lstMarke = stranica.ListaIspisa;
                     //lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
-                    lstMarkeVM = new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
+                    lstMarkeVM = new StaticPagedList<VoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<VoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
                     odgovor.ListaIspisa = lstMarkeVM;
-                }
-                else
-                {
-                    lstMarke = Servis.DohvatiMarke().ToPagedList<IVoziloMarka>(stranica.Str,stranica.BrRedova);
-                    odgovor.UkupanBroj = lstMarke.Count();
-                    //lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
-                    lstMarkeVM =  new StaticPagedList<IVoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<IVoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
-                    odgovor.ListaIspisa = lstMarkeVM;
-                }
+                //}
+                //else
+                //{
+                //    lstMarke = Servis.DohvatiMarke().ToPagedList<IVoziloMarka>(stranica.Str,stranica.BrRedova);
+                //    odgovor.UkupanBroj = lstMarke.Count();
+                //    //lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
+                //    lstMarkeVM =  new StaticPagedList<VoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<VoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
+                //    odgovor.ListaIspisa = lstMarkeVM;
+                //}
                 
                 //lstMarkePG = lstMarkeVM.ToPagedList(stranica.Strana, stranica.BrIspisa);                
                 ViewBag.stranica = stranica;

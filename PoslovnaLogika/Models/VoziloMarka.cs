@@ -14,5 +14,7 @@ namespace PoslovnaLogika.Models
         [Required]
         public string Naziv { get; set; }
         public string Kratica { get; set; }
+
+        public virtual ICollection<VoziloModel> VoziloModels { get; set; }
     }
 }

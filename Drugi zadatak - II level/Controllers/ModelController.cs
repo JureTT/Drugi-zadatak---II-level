@@ -12,12 +12,12 @@ using Filter = PoslovnaLogika.Models.Filter;
 
 namespace Drugi_zadatak___II_level.Controllers
 {
-    public class ModelController : Controller
+    public class ModelController : Controller 
     {
-        VoziloServis Servis = new VoziloServis();
+        IVoziloServis Servis = new VoziloServis();
         Mape Mapa = new Mape();
         IVoziloModel model = null;
-        IVoziloModelVM modelVM = null;
+        VoziloModelVM modelVM = null;
 
         // GET: Model
         public ActionResult Index()
@@ -26,36 +26,27 @@ namespace Drugi_zadatak___II_level.Controllers
         }        
         public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv, int? idMarke)
         {
-            IPagedList<IVoziloModelVM> lstModeliVM = null;
+            IPagedList<VoziloModelVM> lstModeliVM = null;
             IPagedList<IVoziloModel> lstModeli = null;
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj)) ? "D_Id" : (sortiraj == "A_Id") ? "D_Id" : "A_Id";
             ViewBag.sortIdMarke = (sortiraj == "A_IdMarke") ? "D_IdMarke" : "A_IdMarke";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
             ViewBag.sortKratica = (sortiraj == "A_Kratica") ? "D_Kratica" : "A_Kratica";
-            Sorter sorter = new Sorter(sortiraj ?? "A_Id");
-            Filter filter = new Filter(naziv, idMarke);
-            Numerer stranica = new Numerer();
+            ISorter sorter = new Sorter(sortiraj ?? "A_Id");
+            IFilter filter = new Filter(naziv, idMarke);
+            INumerer stranica = new Numerer();
             stranica.Str = strana ?? 1;
             stranica.BrRedova = brIspisa ?? 10;
-            IOdgovor<IVoziloModelVM> odgovor = new Odgovor<IVoziloModelVM>();
+            IOdgovor<VoziloModelVM> odgovor = new Odgovor<VoziloModelVM>();
 
             try
-            {
-                if (naziv != null || sortiraj != null || strana != null)
-                {
-                    lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
-                    odgovor.UkupanBroj = lstModeli.TotalItemCount;
-                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
-                    odgovor.ListaIspisa = lstModeliVM;
-                }
-                else
-                {
-                    lstModeli = Servis.DohvatiModele().ToPagedList<IVoziloModel>(stranica.Str, stranica.BrRedova);
-                    odgovor.UkupanBroj = lstModeli.Count();
-                    lstModeliVM = new StaticPagedList<IVoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<IVoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
-                    odgovor.ListaIspisa = lstModeliVM;
+            {               
+                lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
+                odgovor.UkupanBroj = lstModeli.TotalItemCount;
+                lstModeliVM = new StaticPagedList<VoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<VoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
+                odgovor.ListaIspisa = lstModeliVM;
 
-                }ViewBag.stranica = stranica;
+                ViewBag.stranica = stranica;
             }
             catch (Exception ex)
             {
@@ -144,7 +135,7 @@ namespace Drugi_zadatak___II_level.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "Greška kod upisa modela! Opis: " + ex.Message;
+                ViewBag.Message = "Greška kod upisa modela! Opis: " + ex.Message;    // ex.InnerException.InnerException.Message;  - jako pomoglo
             }
             return View(modelVM);
         }

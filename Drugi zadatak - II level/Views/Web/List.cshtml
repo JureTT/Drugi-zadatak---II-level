@@ -3,18 +3,18 @@
 @using Drugi_zadatak___II_level.Models;
 @using PagedList;
 @using PagedList.Mvc;
-@model PoslovnaLogika.Models.IOdgovor<IVoziloVM>
+@model PoslovnaLogika.Models.IOdgovor<VoziloVM>
 
 @{
     ViewBag.Title = "List";
-    VoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
+    IVoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
                                                 //Mape Mapa = new Mape();
     IList<IVoziloMarka> listaMarki = servis.DohvatiMarke();
     //   probati izbaciti ovaj extra query
     //var listaKratica = Model.ListaIspisa.AsQueryable().Select(x => new { Id = x.IdMarka, Kratica = x.Kratica }).Distinct().ToList();
 
-    Numerer stranica = ViewBag.stranica;
-    IPagedList<IVoziloVM> lista = (IPagedList<IVoziloVM>)Model.ListaIspisa;
+    INumerer stranica = ViewBag.stranica;
+    IPagedList<VoziloVM> lista = (IPagedList<VoziloVM>)Model.ListaIspisa;
     int str = stranica.Str;
     int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
     int brSvi = Model.UkupanBroj;

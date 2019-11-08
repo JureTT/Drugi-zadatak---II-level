@@ -3,12 +3,12 @@
 @using Drugi_zadatak___II_level.Models;
 @using PagedList;
 @using PagedList.Mvc;
-@model PoslovnaLogika.Models.IOdgovor<IVoziloMarkaVM>
+@model PoslovnaLogika.Models.IOdgovor<VoziloMarkaVM>
 @{
     ViewBag.Title = "List";
 
-    Numerer stranica = ViewBag.stranica;
-    IPagedList<IVoziloMarkaVM> lista = (IPagedList<IVoziloMarkaVM>)Model.ListaIspisa;
+    INumerer stranica = ViewBag.stranica;
+    IPagedList<VoziloMarkaVM> lista = (IPagedList<VoziloMarkaVM>)Model.ListaIspisa;
     int str = stranica.Str;
     int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
     int brSvi = Model.UkupanBroj;

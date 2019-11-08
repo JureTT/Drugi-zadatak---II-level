@@ -9,7 +9,7 @@ namespace PoslovnaLogika.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(PoslovnaLogika.Service.VozilaDbContext context)

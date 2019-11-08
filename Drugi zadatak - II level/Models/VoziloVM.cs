@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Drugi_zadatak___II_level.Models
 {
-    public class VoziloVM : IVoziloVM
+    public class VoziloVM
     {
         public int IdModel { get; set; }
         public string NazivModel { get; set; }
