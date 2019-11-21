@@ -12,7 +12,7 @@ namespace PoslovnaLogika.Service
         TEntity Dohvati(int id);
         IEnumerable<TEntity> DohvatiSve();
         
-        void Krairaj(TEntity objekt);
+        void Kreiraj(TEntity objekt);
         void Uredi(TEntity objekt);
         void Izbrisi(TEntity objekt);        
     }

@@ -26,7 +26,7 @@ namespace PoslovnaLogika.Service
             return Context.Set<TEntity>();
         }
         
-        public void Krairaj(TEntity objekt)
+        public void Kreiraj(TEntity objekt)
         {
             Context.Set<TEntity>().Add(objekt);
         }

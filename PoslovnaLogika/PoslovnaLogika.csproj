@@ -80,8 +80,12 @@
     <Compile Include="Models\VoziloMarka.cs" />
     <Compile Include="Models\VoziloModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\IJedinicaRada.cs" />
+    <Compile Include="Service\IMarkaRepozitorij.cs" />
     <Compile Include="Service\IRepozitorij.cs" />
     <Compile Include="Service\IVoziloServis.cs" />
+    <Compile Include="Service\JedinicaRada.cs" />
+    <Compile Include="Service\MarkaRepozitorij.cs" />
     <Compile Include="Service\Repozitorij.cs" />
     <Compile Include="Service\VozilaDbContext.cs" />
     <Compile Include="Service\VoziloServis.cs" />
