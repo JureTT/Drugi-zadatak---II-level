@@ -15,23 +15,9 @@ namespace PoslovnaLogika.Service
         {
         }
 
-        public IEnumerable<IVoziloMarka> DohvatiVise(ISorter sorter, IFilter filter)
+        public IEnumerable<IVoziloMarka> DohvatiVise(IFilter filter)
         {
-            IQueryable<IVoziloMarka> upit = null;
-            upit = (String.IsNullOrEmpty(filter.PretragaUpita)) ? VozilaDbContext.VoziloMarke : VozilaDbContext.VoziloMarke.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
-
-            switch (sorter.Stupac)
-            {
-                case "Id":
-                    upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id) : upit.OrderByDescending(x => x.Id);
-                    break;
-                case "Naziv":
-                    upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv) : upit.OrderByDescending(x => x.Naziv);
-                    break;
-                case "Kratica":
-                    upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica) : upit.OrderByDescending(x => x.Kratica);
-                    break;
-            }
+            IEnumerable<IVoziloMarka> upit = VozilaDbContext.VoziloMarke.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
             return upit;
         }
 

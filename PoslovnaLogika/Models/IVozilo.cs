@@ -2,10 +2,8 @@
 {
     public interface IVozilo
     {
-        int IdMarka { get; set; }
-        int IdModel { get; set; }
+        int Id { get; set; }
+        string Naziv { get; set; }
         string Kratica { get; set; }
-        string NazivMarka { get; set; }
-        string NazivModel { get; set; }
     }
 }

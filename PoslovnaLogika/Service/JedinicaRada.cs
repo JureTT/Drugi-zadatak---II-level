@@ -14,9 +14,11 @@ namespace PoslovnaLogika.Service
         {
             _context = context;
             Marka = new MarkaRepozitorij(_context);
+            Model = new ModelRepozitorij(_context);
         }
 
         public IMarkaRepozitorij Marka { get; private set; }
+        public IModelRepozitorij Model { get; private set; }
 
         public int Spremi()
         {

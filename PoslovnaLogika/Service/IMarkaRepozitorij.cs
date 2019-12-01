@@ -5,6 +5,6 @@ namespace PoslovnaLogika.Service
 {
     interface IMarkaRepozitorij : IRepozitorij<VoziloMarka>
     {
-        IEnumerable<IVoziloMarka> DohvatiVise(ISorter sorter, IFilter filter);
+        IEnumerable<IVoziloMarka> DohvatiVise(IFilter filter);
     }
 }

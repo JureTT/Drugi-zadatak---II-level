@@ -7,9 +7,6 @@ namespace PoslovnaLogika.Service
 {
     public interface IVoziloServis
     {
-        IList<IVoziloModel> DohvatiVozila();
-        IList<IVoziloModel> DohvatiVozila(ISorter sorter, IFilter filter, INumerer stranica);
-
         IList<IVoziloMarka> DohvatiMarke();
         IPagedList<IVoziloMarka> DohvatiMarke(ISorter sorter, IFilter filter, INumerer stranica);
         //Stranica DohvatiMarke(IVoziloSorter sorter, IVoziloFilter filter, IStranica stranica);

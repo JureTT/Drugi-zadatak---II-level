@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PoslovnaLogika.Models
 {
-    public class VoziloModel : IVoziloModel
+    public class VoziloModel : Vozilo, IVoziloModel
     {
         [Key]
         public int Id { get; set; }

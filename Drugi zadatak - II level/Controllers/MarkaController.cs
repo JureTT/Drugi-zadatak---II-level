@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using PagedList;
 using PagedList.Mvc;
 using Filter = PoslovnaLogika.Models.Filter;
+using System.Net;
 
 namespace Drugi_zadatak___II_level.Controllers
 {
@@ -21,14 +22,15 @@ namespace Drugi_zadatak___II_level.Controllers
 
         // GET: Marka
         public ActionResult Index()
-        {           
-            return View("Error");        
+        {
+            string poruka = "Stranica koju tražite ne postoji";
+            HttpStatusCode status = HttpStatusCode.NotFound;
+            return new HttpStatusCodeResult(status, poruka);        
         }
 
         public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv)
         {           
             IPagedList<VoziloMarkaVM> lstMarkeVM = null;
-            //List<VoziloMarkaVM> lstMarkeVM = null;
             IPagedList<IVoziloMarka> lstMarke = null;
             ViewBag.sortId = (String.IsNullOrEmpty(sortiraj))? "D_Id" : (sortiraj == "A_Id") ? "D_Id": "A_Id";
             ViewBag.sortNaziv = (sortiraj == "A_Naziv") ? "D_Naziv" : "A_Naziv";
@@ -37,36 +39,23 @@ namespace Drugi_zadatak___II_level.Controllers
             IFilter filter = new Filter(naziv);            
             INumerer stranica = new Numerer();
             stranica.Str = strana ?? 1;
+            brIspisa = (brIspisa < 1) ? 10 : brIspisa;
             stranica.BrRedova = brIspisa ?? 10;
-            //IOdgovor<IVoziloMarka> odgovoric = new Odgovor<IVoziloMarka>();
             IOdgovor<VoziloMarkaVM> odgovor = new Odgovor<VoziloMarkaVM>();
 
             try
             {
-                //if (naziv != null || sortiraj != null || strana != null)
-                //{
-                    lstMarke = Servis.DohvatiMarke(sorter, filter, stranica);
-                    odgovor.UkupanBroj = lstMarke.TotalItemCount;
-                    //lstMarke = stranica.ListaIspisa;
-                    //lstMarkeVM = Mapa.maper.Map<List<VoziloMarkaVM>>(lstMarke);
-                    lstMarkeVM = new StaticPagedList<VoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<VoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
-                    odgovor.ListaIspisa = lstMarkeVM;
-                //}
-                //else
-                //{
-                //    lstMarke = Servis.DohvatiMarke().ToPagedList<IVoziloMarka>(stranica.Str,stranica.BrRedova);
-                //    odgovor.UkupanBroj = lstMarke.Count();
-                //    //lstMarke = lstMarke.Skip((stranica.Str - 1) * stranica.BrRedova).Take(stranica.BrRedova).ToList();
-                //    lstMarkeVM =  new StaticPagedList<VoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>,IEnumerable<VoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
-                //    odgovor.ListaIspisa = lstMarkeVM;
-                //}
-                
-                //lstMarkePG = lstMarkeVM.ToPagedList(stranica.Strana, stranica.BrIspisa);                
+                lstMarke = Servis.DohvatiMarke(sorter, filter, stranica);
+                lstMarkeVM = new StaticPagedList<VoziloMarkaVM>(Mapa.maper.Map<IEnumerable<IVoziloMarka>, IEnumerable<VoziloMarkaVM>>(lstMarke), lstMarke.GetMetaData());
+                odgovor.ListaIspisa = lstMarkeVM;
+
                 ViewBag.stranica = stranica;
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
+                string poruka = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
+                HttpStatusCode status = HttpStatusCode.InternalServerError;
+                return new HttpStatusCodeResult(status, poruka);
             }
             return View(odgovor);
         }

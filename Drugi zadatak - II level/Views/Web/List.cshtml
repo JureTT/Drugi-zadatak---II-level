@@ -3,36 +3,28 @@
 @using Drugi_zadatak___II_level.Models;
 @using PagedList;
 @using PagedList.Mvc;
-@model PoslovnaLogika.Models.IOdgovor<VoziloVM>
+@model PoslovnaLogika.Models.IOdgovor<VoziloModelVM>
 
 @{
     ViewBag.Title = "List";
-    IVoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste
-                                                //Mape Mapa = new Mape();
+    IVoziloServis servis = new VoziloServis();   //kod za popunjavanje dropdownliste                                                 
     IList<IVoziloMarka> listaMarki = servis.DohvatiMarke();
-    //   probati izbaciti ovaj extra query
-    //var listaKratica = Model.ListaIspisa.AsQueryable().Select(x => new { Id = x.IdMarka, Kratica = x.Kratica }).Distinct().ToList();
-
+    
     INumerer stranica = ViewBag.stranica;
-    IPagedList<VoziloVM> lista = (IPagedList<VoziloVM>)Model.ListaIspisa;
+    IPagedList<VoziloModelVM> lista = (IPagedList<VoziloModelVM>)Model.ListaIspisa;
     int str = stranica.Str;
-    int[] stranice = new int[5] { 5, 10, 15, 20, 25 };
-    int brSvi = Model.UkupanBroj;
+    int brSvi = lista.TotalItemCount;
     int brIsp = stranica.BrRedova;
     int brStr = (brSvi % brIsp != 0) ? (brSvi / brIsp) + 1 : brSvi / brIsp;
     int a = 0;      // kod za listanje stranica u oba smjera
     string sort = Request.QueryString["sortiraj"];
     if (sort == "D_Id")
     {
-        //str = (str == 0) ? 1 : str;
         a = brSvi + 1 - ((str - 1) * brIsp);
     }
     else
     {
-        //if (str > 0)
-        //{
         a = (str - 1) * brIsp;
-        ////}
     }
 }
 
@@ -44,13 +36,8 @@
     @using (Html.BeginForm("List", "Web", FormMethod.Get))
     {
         <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Veličina popisa: </label>
-        @Html.DropDownList("brIspisa",
-                stranice.Select(item => new SelectListItem { Value = item.ToString(), Text = item.ToString(), Selected = item.ToString() == (Request.QueryString["brIspisa"]??"10")}),
-
-                new
-                {
-                    onchange = "submit()"
-                })
+        @Html.TextBox("brIspisa", brIsp, new { MaxLength = 2, Size = 2 })
+        <input type="submit" value="Unesi" />
         <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marke vozila: </label>
         @Html.DropDownList("idMarke",
                 listaMarki.Select(item => new SelectListItem { Value = item.Id.ToString(), Text = item.Kratica }),
@@ -98,18 +85,18 @@
                 }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NazivModel)
+                @Html.DisplayFor(modelItem => item.Naziv)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Kratica)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NazivMarka)
+                @Html.DisplayFor(modelItem => item.VoziloMarka.Naziv)
             </td>
             <td>
-                <a target="_blank" href="http://www.google.com/search?q= @item.NazivModel @item.Kratica">Google</a> |
-                <a target="_blank" href="http://www.youtube.com/results?search_query= @item.NazivModel @item.Kratica">YouTube</a> |
-                <a target="_blank" href="http://en.wikipedia.org/wiki/@item.Kratica @item.NazivModel ">Wiki</a>
+                <a target="_blank" href="http://www.google.com/search?q= @item.Naziv @item.Kratica">Google</a> |
+                <a target="_blank" href="http://www.youtube.com/results?search_query= @item.Naziv @item.Kratica">YouTube</a> |
+                <a target="_blank" href="http://en.wikipedia.org/wiki/@item.Kratica @item.Naziv ">Wiki</a>
             </td>
         </tr>
     }

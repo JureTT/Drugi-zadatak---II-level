@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using PagedList;
 using PagedList.Mvc;
 using Filter = PoslovnaLogika.Models.Filter;
+using System.Net;
 
 namespace Drugi_zadatak___II_level.Controllers
 {
@@ -22,8 +23,11 @@ namespace Drugi_zadatak___II_level.Controllers
         // GET: Model
         public ActionResult Index()
         {
-            return View("Error");
-        }        
+            string poruka = "Stranica koju tražite ne postoji";
+            HttpStatusCode status = HttpStatusCode.NotFound;
+            return new HttpStatusCodeResult(status, poruka);
+        } 
+        
         public ActionResult List(int? brIspisa, int? strana, string sortiraj, string naziv, int? idMarke)
         {
             IPagedList<VoziloModelVM> lstModeliVM = null;
@@ -36,13 +40,13 @@ namespace Drugi_zadatak___II_level.Controllers
             IFilter filter = new Filter(naziv, idMarke);
             INumerer stranica = new Numerer();
             stranica.Str = strana ?? 1;
+            brIspisa = (brIspisa < 1) ? 10 : brIspisa;
             stranica.BrRedova = brIspisa ?? 10;
             IOdgovor<VoziloModelVM> odgovor = new Odgovor<VoziloModelVM>();
 
             try
             {               
                 lstModeli = Servis.DohvatiModele(sorter, filter, stranica);
-                odgovor.UkupanBroj = lstModeli.TotalItemCount;
                 lstModeliVM = new StaticPagedList<VoziloModelVM>(Mapa.maper.Map<IEnumerable<IVoziloModel>, IEnumerable<VoziloModelVM>>(lstModeli), lstModeli.GetMetaData());
                 odgovor.ListaIspisa = lstModeliVM;
 
@@ -50,57 +54,13 @@ namespace Drugi_zadatak___II_level.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Message = "Greška kod dohvaćanja popisa marki vozila. Opis: " + ex.Message;
+                string poruka = "Greška kod dohvaćanja popisa modela vozila. Opis: " + ex.Message;
+                HttpStatusCode status = HttpStatusCode.InternalServerError;
+                return new HttpStatusCodeResult(status, poruka);
             }
             return View(odgovor);
             
-                //if (idMarke > 0)
-                //{
-                //    lstModeli = Servis.DohvatiListuModela(idMarke);                    
-                //}
-                //else
-                //{
-                //    lstModeli = Servis.DohvatiModele();
-                //}
-                //if (naziv != null)
-                //{
-                //    lstModeli = (from item in lstModeli where item.Naziv.ToLower().Contains(naziv.ToLower()) select item).ToList();
-                //}
         }
-        //[HttpPost]//ovo ti najvjerovatnije ne treba
-        //public ActionResult List(int idMarke,int? strana)
-        //{
-        //    List<VoziloModelVM> lstModeliVM = new List<VoziloModelVM>();
-        //    IPagedList<VoziloModelVM> listaModeliVM = null;
-        //    int str;
-        //    if (strana == null)
-        //    {
-        //        str = 1;
-        //    }
-        //    else
-        //    {
-        //        str = strana.Value;
-        //    }
-        //    try
-        //    {
-        //        if (idMarke == 0)
-        //        {
-        //            Response.Redirect("List");
-        //        }
-        //        else
-        //        {
-        //            List<VoziloModel> lstModeli = Servis.DohvatiListuModela(idMarke);
-        //            lstModeliVM = Mapa.maper.Map<List<VoziloModelVM>>(lstModeli);
-        //            listaModeliVM = lstModeliVM.ToPagedList(str, 10); 
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewBag.Message = "Greška kod dohvaćanja popisa modela vozila. Opis: " + ex.Message;
-        //    }
-        //    return View(listaModeliVM);
-        //}
-
         // GET: Model/Details/5
         public ActionResult Details(int idModela)
         {

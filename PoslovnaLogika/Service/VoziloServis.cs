@@ -16,154 +16,61 @@ namespace PoslovnaLogika.Service
 {
     public class VoziloServis : IVoziloServis
     {
-        public VozilaDbContext _db = new VozilaDbContext();
         JedinicaRada jedinicaRada = new JedinicaRada(new VozilaDbContext());
-       
-        #region Vozilo
-        public IList<IVoziloModel> DohvatiVozila()
-        {
-            //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
-            IList<IVoziloModel> kolekcija = _db.VoziloModeli.Include(x => x.VoziloMarka).ToList<IVoziloModel>();
-            //List<VoziloMarka> list = _db.VoziloMarke.ToList();
-            //foreach (VoziloModel item in lista)
-            //{
-            //    VoziloMarka marka = list.Where(x => x.Id == item.IdMarke).Single();
-            //    item.VoziloMarka = marka;
-            //}
-            return kolekcija;
-        }
-        public IList<IVoziloModel> DohvatiVozila(ISorter sorter, IFilter filter, INumerer stranica)
-        {
-            IQueryable<IVoziloModel> upit = null;
-            IList<IVoziloModel> kolekcija = null;
-            //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke;");
-                        
-            upit = (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0)
-                ?
-                upit = (!String.IsNullOrEmpty(filter.PretragaUpita) && filter.IdMarke > 0)
-                    ?
-                    _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && x.IdMarke == filter.IdMarke)
-                    :
-                    _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) || x.IdMarke == filter.IdMarke)
-                :
-                _db.VoziloModeli;
-
-
-            switch (sorter.Stupac)
-                {
-                    case "Id":
-                        upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id) : upit.OrderByDescending(x => x.Id);
-                        break;
-                    case "NazivMarke":
-                        upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.VoziloMarka.Naziv) : upit.OrderByDescending(x => x.VoziloMarka.Naziv);
-                        break;
-                    case "NazivModela":
-                        upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv) : upit.OrderByDescending(x => x.Naziv);
-                        break;
-                    case "Kratica":
-                        upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica) : upit.OrderByDescending(x => x.Kratica);
-                        break;
-                }
-
-            kolekcija = upit.ToList();
-
-            return kolekcija;
-        }
-        #endregion Vozilo
-
+               
         #region MarkaCRUD
         public IList<IVoziloMarka> DohvatiMarke()
         {
-            //IList<IVoziloMarka> kolekcija = _db.VoziloMarke.ToList<IVoziloMarka>();
             IList<IVoziloMarka> kolekcija = jedinicaRada.Marka.DohvatiSve().ToList<IVoziloMarka>();
             return kolekcija;
         }
         public IPagedList<IVoziloMarka> DohvatiMarke(ISorter sorter, IFilter filter, INumerer stranica)
         {
-            //Numerer strIspis = (Numerer)stranica;
-            //Sorter sorter = (Sorter)sort;
-            IQueryable<IVoziloMarka> upit = null;
+            IEnumerable<IVoziloMarka> upit = null;
             IPagedList<IVoziloMarka> kolekcija = null;
-            //sorter.Poredak = (sorter.Poredak == "A") ? "ASC" : "DESC";
-            //sorter.Poredak = (sorter.Poredak == "A") ? "OrderBy" : "OrderByDescending";
+            
+            //NAPOMENA: CIJELI UVJET SVEDEN NA SAMO SLJEDEĆU LINIJU KODA            
+            upit = (String.IsNullOrEmpty(filter.PretragaUpita))? jedinicaRada.Marka.DohvatiSve() : jedinicaRada.Marka.DohvatiVise(filter);
 
-            //var parametar = Expression.Parameter(typeof(VoziloMarka), "item");      //  -- kreiranje parametra
-            //var izraz = Expression.Property(parametar, sorter.Stupac);
-            //var konverzija = Expression.Convert(izraz, typeof(object));
-            //var lambda = Expression.Lambda<Func<VoziloMarka, object>>(konverzija, parametar);
-            //var lambda = Expression.Lambda(izraz, parametar);
-            //MethodCallExpression ispis = null;
-            //PropertyInfo svojstvo = typeof(VoziloMarka).GetProperty(sorter.Stupac);
+            switch (sorter.Stupac)
+            {
+                case "Id":
+                    upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id) : upit.OrderByDescending(x => x.Id);
+                    break;
+                case "Naziv":
+                    upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv) : upit.OrderByDescending(x => x.Naziv);
+                    break;
+                case "Kratica":
+                    upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica) : upit.OrderByDescending(x => x.Kratica);
+                    break;
+            }
 
-            //string upit = "SELECT * FROM VoziloMarkas" ORDER BY " + sorter.Stupac + " " + sorter.Poredak + "; ";
-            //List<VoziloMarka> kolekcija = _db.VoziloMarke.SqlQuery("SELECT* FROM VoziloMarkas " + sorter.Sort + "; ").ToList();
-
-            //kolekcija = _db.VoziloMarke.SqlQuery("SELECT * FROM VoziloMarkas WHERE Naziv LIKE '%" + filter.Naziv + "%' " + sorter.Sort + " ;").ToList();
-            //kolekcija = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.Naziv.ToLower()) select item).OrderBy(x => x.GetType().ToString() == sorter.Stupac);
-            //upit = (from item in _db.VoziloMarke where item.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) select item);
-
-            //NAPOMENA: CIJELI UVJET SVEDEN NA SAMO SLJEDEĆU LINIJU KODA
-            upit = jedinicaRada.Marka.DohvatiVise(sorter, filter).AsQueryable();
-            //upit = (String.IsNullOrEmpty(filter.PretragaUpita))? _db.VoziloMarke : _db.VoziloMarke.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()));
-
-            //ispis = Expression.Call(typeof(Queryable), sorter.Poredak, new[] { typeof(VoziloMarka), izraz.Type }, upit.Expression, Expression.Quote(lambda));
-
-            //switch (sorter.Stupac)
-            //    {
-            //        case "Id":
-            //            upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Id) : upit.OrderByDescending(x => x.Id);
-            //            break;
-            //        case "Naziv":
-            //            upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Naziv) : upit.OrderByDescending(x => x.Naziv);
-            //            break;
-            //        case "Kratica":
-            //            upit = (sorter.Poredak == "A") ? upit.OrderBy(x => x.Kratica) : upit.OrderByDescending(x => x.Kratica);
-            //            break;
-            //    }
-                //kolekcija = upit.Provider.CreateQuery<VoziloMarka>(ispis).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
-                //kolekcija = upit.OrderBy(sorter.Stupac + " " + sorter.Poredak).Skip((strIspis.Str - 1) * strIspis.BrRedova).Take(strIspis.BrRedova).ToList();
-                //OrderBy(lambda,Compile())
-                //OrderBy(item => svojstvo.GetValue(item))
-                //OrderBy(item => item.GetType().GetProperty(property).GetValue(item))
-           
             kolekcija = upit.ToPagedList(stranica.Str, stranica.BrRedova);
             
             return kolekcija;
         }
-        //public List<VoziloMarka> DohvatiListuMarki(int? idMarke)
-        //{
-        //    List<VoziloMarka> kolekcija = (from item in _db.VoziloMarke where item.Id == idMarke select item).ToList();
-        //    return kolekcija;
-        //}
 
         public IVoziloMarka DohvatiMarku(int idMarka)
         {
-            //IVoziloMarka marka = _db.VoziloMarke.Find(idMarka);
             IVoziloMarka marka = jedinicaRada.Marka.Dohvati(idMarka);
             return marka;
         }
         
         public void KreirajMarku(IVoziloMarka marka)
         {
-            //_db.Entry(marka).State = EntityState.Added;
-            //_db.SaveChanges();
             jedinicaRada.Marka.Kreiraj((VoziloMarka)marka);
             jedinicaRada.Spremi();
         }
 
         public void UrediMarku(IVoziloMarka marka)
         {
-            //_db.Entry(marka).State = EntityState.Modified;
-            //_db.SaveChanges();
             jedinicaRada.Marka.Uredi((VoziloMarka)marka);
             jedinicaRada.Spremi();
         }
 
         public void IzbrisiMarku(int idMarke)
         {
-            IVoziloMarka marka = jedinicaRada.Marka.Dohvati(idMarke);//_db.VoziloMarke.Find(idMarke);
-            //_db.VoziloMarke.Remove((VoziloMarka)marka);
-            //_db.SaveChanges();
+            IVoziloMarka marka = jedinicaRada.Marka.Dohvati(idMarke);
             jedinicaRada.Marka.Izbrisi((VoziloMarka)marka);
             jedinicaRada.Spremi();
         }
@@ -173,25 +80,20 @@ namespace PoslovnaLogika.Service
         #region ModelCRUD
         public IList<IVoziloModel> DohvatiModele()
         {
-            IList<IVoziloModel> kolekcija = _db.VoziloModeli.ToList<IVoziloModel>();
+            IList<IVoziloModel> kolekcija = jedinicaRada.Model.DohvatiSve().ToList<IVoziloModel>();
             return kolekcija;
         }
         public IPagedList<IVoziloModel> DohvatiModele(ISorter sorter, IFilter filter, INumerer stranica)
         {
-            IQueryable<IVoziloModel> upit = null;
+            IEnumerable<IVoziloModel> upit = null;
             IPagedList<IVoziloModel> kolekcija = null;
 
             //NAPOMENA: CIJELI VELIKI UVJET SVEDEN NA SLJEDEĆE LINIJE KODA
-            upit = (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0 )
-                ?
-                upit = (!String.IsNullOrEmpty(filter.PretragaUpita) && filter.IdMarke > 0 ) 
-                    ?           
-                    _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) && x.IdMarke == filter.IdMarke)
-                    :
-                    _db.VoziloModeli.Where(x => x.Naziv.ToLower().Contains(filter.PretragaUpita.ToLower()) || x.IdMarke == filter.IdMarke)
-                :
-                _db.VoziloModeli;
-            
+            upit = (!String.IsNullOrEmpty(filter.PretragaUpita) || filter.IdMarke > 0)
+                ? upit = (!String.IsNullOrEmpty(filter.PretragaUpita) && filter.IdMarke > 0)
+                    ? jedinicaRada.Model.DohvatiVise(filter)
+                    : jedinicaRada.Model.DohvatiViseIli(filter)
+                : jedinicaRada.Model.DohvatiSve();            
 
             switch (sorter.Stupac)
             {
@@ -213,39 +115,30 @@ namespace PoslovnaLogika.Service
 
             return kolekcija;
         }
-        //// -- izgleda da je ova metoda nepotrebna uz nove promjene
-        //public List<VoziloModel> DohvatiListuModela(int? idMarke)
-        //{
-        //    List<VoziloModel> kolekcija = (from item in _db.VoziloModeli where item.IdMarke == idMarke select item).ToList();
-        //    return kolekcija;
-        //}
-
+        
         public IVoziloModel DohvatiModel(int idModela)
         {
-            IVoziloModel model = _db.VoziloModeli.Find(idModela);
+            IVoziloModel model = jedinicaRada.Model.Dohvati(idModela);
             return model;
         }
 
         public void KreirajModel(IVoziloModel model)
         {
-            _db.Entry(model).State = EntityState.Added;
-            _db.SaveChanges();
-            //NEMA VIŠE SHADOW PROPERTY-A
-            //_db.Entry(model).Property("VoziloMarka_Id").CurrentValue = model.IdMarke;
-            //var azuriranje = _db.Database.ExecuteSqlCommand("UPDATE VoziloModels SET VoziloMarka_Id = IdMarke WHERE Id = " + model.Id + " ;");
+            jedinicaRada.Model.Kreiraj((VoziloModel)model);
+            jedinicaRada.Spremi();
         }
 
         public void UrediModel(IVoziloModel model)
         {
-            _db.Entry(model).State = EntityState.Modified;
-            _db.SaveChanges();
+            jedinicaRada.Model.Uredi((VoziloModel)model);
+            jedinicaRada.Spremi();
         }
 
         public void IzbrisiModel(int idModela)
         {
-            IVoziloModel model = _db.VoziloModeli.Find(idModela);
-            _db.VoziloModeli.Remove((VoziloModel)model);
-            _db.SaveChanges();
+            IVoziloModel model = jedinicaRada.Model.Dohvati(idModela);
+            jedinicaRada.Model.Izbrisi((VoziloModel)model);
+            jedinicaRada.Spremi();
         }
         #endregion
     }

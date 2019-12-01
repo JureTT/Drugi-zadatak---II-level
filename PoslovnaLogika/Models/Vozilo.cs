@@ -8,10 +8,8 @@ namespace PoslovnaLogika.Models
 {
     public class Vozilo : IVozilo
     {
-        public int IdModel { get; set; }
-        public string NazivModel { get; set; }
+        public int Id { get; set; }
+        public string Naziv { get; set; }
         public string Kratica { get; set; }
-        public int IdMarka { get; set; }
-        public string NazivMarka { get; set; }
     }
 }
